@@ -20,14 +20,14 @@
   "theme_color": "#991b1b",
   "icons": [
     {
-      "src": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+      "src": "https://github.com/kundarwork-debug.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }'>
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22none%22 stroke=%22%23b91c1c%22 stroke-width=%229%22/><text x=%2250%22 y=%2262%22 font-size=%2238%22 font-family=%22Arial, Helvetica, sans-serif%22 font-weight=%22900%22 fill=%22%23b91c1c%22 text-anchor=%22middle%22 letter-spacing=%22-1%22>KP</text></svg>">
+<link rel="icon" type="image/png" href="https://github.com/kundarwork-debug.png">
 
 <style>
   :root {
@@ -103,7 +103,7 @@
 
   /* ---------- ALWAYS-VISIBLE MOBILE INSTALL BANNER ---------- */
   .install-banner {
-    display: none; /* Controlled by JavaScript */
+    display: none;
     position: fixed;
     top: 16px;
     left: 50%;
@@ -264,8 +264,8 @@
 
   <div class="landing-footer-wrap">
     <div class="footer-brand">By Prasad</div>
-    <a href="about.html" class="about-me-btn">
-      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="github-avatar">
+    <a href="https://github.com/kundarwork-debug" target="_blank" class="about-me-btn">
+      <img src="https://github.com/kundarwork-debug.png" alt="kundarwork-debug profile" class="github-avatar">
       About Me ↗
     </a>
   </div>
@@ -300,7 +300,7 @@
       }
       deferredPrompt = null;
     } else {
-      // Fallback instructions if native prompt isn't fired (e.g. non-HTTPS, local test, or iOS)
+      // Fallback instructions if native prompt isn't fired
       alert("To add shortcut to home screen:\n\n1. Tap the 3 dots (⋮) or Share button in your browser.\n2. Tap 'Add to Home screen' or 'Install app'.");
     }
   });
