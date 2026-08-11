@@ -583,7 +583,7 @@
 
 <script>
 /* ---------------------------------------------------------------
-   HELPERS & INITIAL DEFAULTS
+   HELPERS & INITIAL DEFAULTS (All cost item amounts start at 0)
 --------------------------------------------------------------- */
 function getFormattedCurrentDate() {
   const d = new Date();
@@ -615,13 +615,13 @@ const DEFAULTS = {
     docNo: "2025323429",
     gstNo: "23AAACL1838J1ZO",
     costItems: [
-      { label: "Freight", amount: 28800 },
-      { label: "Car Freight", amount: 15500 },
-      { label: "Packing Charges", amount: 9600 },
-      { label: "Loading Charges at Origin", amount: 4800 },
-      { label: "Unloading Charges at Destination", amount: 2400 },
-      { label: "Unpacking Charges", amount: 1440 },
-      { label: "Other Charges (Toll etc.)", amount: 960 }
+      { label: "Freight", amount: 0 },
+      { label: "Car Freight", amount: 0 },
+      { label: "Packing Charges", amount: 0 },
+      { label: "Loading Charges at Origin", amount: 0 },
+      { label: "Unloading Charges at Destination", amount: 0 },
+      { label: "Unpacking Charges", amount: 0 },
+      { label: "Other Charges (Toll etc.)", amount: 0 }
     ],
     gstPercent: 0,
     terms: [
@@ -652,10 +652,10 @@ const DEFAULTS = {
     docNo: "MAX202526954",
     gstNo: "07AAICM9877E1ZX",
     costItems: [
-      { label: "Transportation Cost", amount: 30600 },
-      { label: "Packing + Loading + Unloading + Unpacking", amount: 12750 },
-      { label: "Car Transportation (if any)", amount: 17000 },
-      { label: "Toll Tax + Risk Cover + Misc. Cost", amount: 7650 }
+      { label: "Transportation Cost", amount: 0 },
+      { label: "Packing + Loading + Unloading + Unpacking", amount: 0 },
+      { label: "Car Transportation (if any)", amount: 0 },
+      { label: "Toll Tax + Risk Cover + Misc. Cost", amount: 0 }
     ],
     gstPercent: 0,
     terms: [
