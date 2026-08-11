@@ -39,6 +39,7 @@
     display: grid;
     grid-template-columns: 440px 1fr;
     min-height: 100vh;
+    width: 100%;
   }
 
   /* ---------- LEFT: CONTROL PANEL ---------- */
@@ -445,14 +446,17 @@
   @media (max-width: 768px) {
     .app {
       grid-template-columns: 1fr !important;
+      width: 100% !important;
       min-height: auto;
     }
 
     .panel {
+      width: 100% !important;
       max-height: none !important;
       border-right: none !important;
       border-bottom: 1px solid var(--border-light);
       padding: 20px 16px 40px !important;
+      box-sizing: border-box;
     }
 
     /* HIDE Document details, Terms & conditions, and Registered office on mobile */
@@ -462,22 +466,9 @@
       display: none !important;
     }
 
+    /* HIDE PDF Preview stage on mobile screens */
     .stage {
-      padding: 16px 8px !important;
-      max-height: none !important;
-      overflow-x: auto;
-    }
-
-    .sheet-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    #previewA4 {
-      width: 100%;
-      max-width: 794px;
-      min-height: auto !important;
-      box-sizing: border-box;
+      display: none !important;
     }
   }
 </style>
@@ -997,7 +988,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 });
 
 /* ---------------------------------------------------------------
-   PDF DOWNLOAD WITH MOBILE-TO-DESKTOP SCALE FIX
+   PDF DOWNLOAD WITH MOBILE FIX
 --------------------------------------------------------------- */
 document.getElementById('downloadBtn').addEventListener('click', async () => {
   // Mandatory details check
@@ -1014,8 +1005,10 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
   status.textContent = '';
 
   const node = document.getElementById('previewA4');
+  const stage = document.querySelector('.stage');
 
   // Save current inline styles to restore after export
+  const originalStageDisplay = stage.style.display;
   const originalWidth = node.style.width;
   const originalMinHeight = node.style.minHeight;
   const originalPosition = node.style.position;
@@ -1023,7 +1016,8 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
   const originalTransform = node.style.transform;
 
   try {
-    // 1. Temporarily force fixed desktop dimensions off-screen (794px width)
+    // 1. Temporarily unhide stage & force desktop dimensions off-screen (794px width)
+    stage.style.display = 'block';
     node.style.width = '794px';
     node.style.minHeight = '1123px';
     node.style.position = 'absolute';
@@ -1039,7 +1033,8 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
       windowWidth: 794
     });
 
-    // 3. Instantly restore original styles for seamless user experience
+    // 3. Instantly restore original styles
+    stage.style.display = originalStageDisplay;
     node.style.width = originalWidth;
     node.style.minHeight = originalMinHeight;
     node.style.position = originalPosition;
@@ -1078,6 +1073,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     status.textContent = 'Something went wrong generating the PDF. Please try again.';
     
     // Restore styles in case of error
+    stage.style.display = originalStageDisplay;
     node.style.width = originalWidth;
     node.style.minHeight = originalMinHeight;
     node.style.position = originalPosition;
