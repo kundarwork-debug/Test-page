@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <link rel="manifest" href="manifest.json">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APML Support Page</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22none%22 stroke=%22%23b91c1c%22 stroke-width=%229%22/><text x=%2250%22 y=%2262%22 font-size=%2238%22 font-family=%22Arial, Helvetica, sans-serif%22 font-weight=%22900%22 fill=%22%23b91c1c%22 text-anchor=%22middle%22 letter-spacing=%22-1%22>KP</text></svg>">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APML Support">
+<meta name="theme-color" content="#991b1b">
+
 <style>
   :root {
     --bg-main: #f8fafc;
@@ -22,73 +28,14 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- TOP NAVIGATION HEADER ---------- */
-  .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(252, 165, 165, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    z-index: 90;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  }
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
-
-  .header-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .header-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.02em;
-  }
-
-  .download-apk-btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 22px;
-    background: #0f172a;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 30px;
-    text-decoration: none;
-    transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .download-apk-btn:hover {
-    background: #991b1b;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(153, 27, 27, 0.25);
-  }
-
-  /* ---------- LANDING PAGE WITH BACKGROUND IMAGE ---------- */
+  /* ---------- LANDING PAGE ---------- */
   .landing-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 88px 24px 80px 24px; /* Top padding adjusted to clear fixed header */
+    padding: 24px;
     background: linear-gradient(rgba(254, 242, 242, 0.85), rgba(254, 242, 242, 0.95)), url('image_6c9245.png');
     background-size: cover;
     background-position: center;
@@ -136,7 +83,7 @@
     background: #7f1d1d;
   }
 
-  /* ---------- STATIC BOTTOM FOOTER ---------- */
+  /* ---------- FOOTER ---------- */
   .landing-footer-wrap {
     position: absolute;
     bottom: 0;
@@ -194,25 +141,109 @@
     transition: var(--transition);
   }
 
-  .about-me-btn:hover .github-avatar {
-    border-color: #ffffff;
+  /* ---------- SHORTCUT POPUP MODAL ---------- */
+  .shortcut-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
   }
 
-  /* ---------- MOBILE ADJUSTMENTS ---------- */
+  .shortcut-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .shortcut-modal-card {
+    background: #ffffff;
+    padding: 32px 24px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+
+  .shortcut-modal-overlay.active .shortcut-modal-card {
+    transform: scale(1);
+  }
+
+  .shortcut-icon {
+    width: 64px;
+    height: 64px;
+    background: #fef2f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #991b1b;
+  }
+
+  .shortcut-modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 8px;
+  }
+
+  .shortcut-modal-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  .shortcut-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .shortcut-add-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #991b1b;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(153, 27, 27, 0.2);
+    transition: var(--transition);
+  }
+
+  .shortcut-add-btn:hover {
+    background: #7f1d1d;
+  }
+
+  .shortcut-close-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  /* Responsive Adjustments */
   @media (max-width: 768px) {
-    .app-header {
-      padding: 0 16px;
-    }
-
-    .header-title {
-      font-size: 17px;
-    }
-
-    .download-apk-btn {
-      padding: 8px 16px;
-      font-size: 13px;
-    }
-
     .welcome-box {
       width: 90%;
       padding: 30px 20px !important;
@@ -240,14 +271,6 @@
 </head>
 <body>
 
-<header class="app-header">
-  <div class="header-brand">
-    <img src="https://github.com/kundarwork-debug.png" alt="APML Logo" class="header-logo">
-    <span class="header-title">APML Support</span>
-  </div>
-  <a href="app-release.apk" class="download-apk-btn" download>Download</a>
-</header>
-
 <div class="landing-page" id="landingPage">
   <div class="welcome-box">
     <h1 class="welcome-title">We're glad you're here!</h1>
@@ -262,6 +285,83 @@
     </a>
   </div>
 </div>
+
+<div class="shortcut-modal-overlay" id="shortcutModal">
+  <div class="shortcut-modal-card">
+    <div class="shortcut-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+    </div>
+    <h3 class="shortcut-modal-title">Add to Home Screen</h3>
+    <p class="shortcut-modal-desc" id="shortcutInstruction">
+      Add this web page to your home screen for quick and easy access.
+    </p>
+    <div class="shortcut-btn-group">
+      <button class="shortcut-add-btn" id="installShortcutBtn">Add Shortcut</button>
+      <button class="shortcut-close-btn" onclick="closeShortcutModal()">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let deferredPrompt = null;
+
+  function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+      || window.innerWidth <= 768;
+  }
+
+  function isIOS() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  function closeShortcutModal() {
+    document.getElementById('shortcutModal').classList.remove('active');
+  }
+
+  // Intercept native install prompt on Chrome/Android
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showShortcutModal();
+  });
+
+  function showShortcutModal() {
+    const modal = document.getElementById('shortcutModal');
+    const instruction = document.getElementById('shortcutInstruction');
+    const installBtn = document.getElementById('installShortcutBtn');
+
+    if (isIOS()) {
+      instruction.innerHTML = 'Tap the <strong>Share</strong> button <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> in Safari, then select <strong>"Add to Home Screen"</strong>.';
+      installBtn.style.display = 'none'; // iOS requires manual share menu interaction
+    }
+
+    modal.classList.add('active');
+  }
+
+  // Button handler for Android/Desktop Chrome
+  document.getElementById('installShortcutBtn').addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      closeShortcutModal();
+    } else {
+      // Fallback instructions if automatic prompt isn't supported by browser
+      alert('To add a shortcut, open your browser menu (⋮) and tap "Add to Home screen".');
+      closeShortcutModal();
+    }
+  });
+
+  // Fallback trigger for iOS or mobile devices where beforeinstallprompt isn't fired
+  window.addEventListener('DOMContentLoaded', () => {
+    if (isMobileDevice() && isIOS()) {
+      setTimeout(showShortcutModal, 1000);
+    }
+  });
+</script>
 
 </body>
 </html>
