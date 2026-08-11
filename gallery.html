@@ -163,7 +163,7 @@
   }
 
   .upload-btn {
-    background: var(--primary);
+    background: #25d366; /* WhatsApp Green */
     color: #ffffff;
     border: none;
     padding: 10px 20px;
@@ -174,13 +174,15 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    text-decoration: none;
     transition: var(--transition);
-    box-shadow: 0 4px 12px rgba(153, 27, 27, 0.2);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
   }
 
   .upload-btn:hover {
-    background: var(--primary-dark);
+    background: #1eb954;
     transform: translateY(-1px);
+    color: #ffffff;
   }
 
   /* ---------- MEDIA GRID ---------- */
@@ -286,16 +288,15 @@
 
   .card-actions {
     display: flex;
-    gap: 8px;
     padding-top: 12px;
     border-top: 1px dashed #f1f5f9;
   }
 
-  .action-btn {
-    flex: 1;
-    padding: 8px;
+  .btn-download {
+    width: 100%;
+    padding: 10px;
     border-radius: var(--radius-sm);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-align: center;
     text-decoration: none;
@@ -305,10 +306,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-  }
-
-  .btn-download {
+    gap: 6px;
     background: var(--primary-light);
     color: var(--primary);
     border: 1px solid rgba(252, 165, 165, 0.5);
@@ -316,17 +314,6 @@
 
   .btn-download:hover {
     background: var(--primary);
-    color: #ffffff;
-  }
-
-  .btn-whatsapp {
-    background: #f0fdf4;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-  }
-
-  .btn-whatsapp:hover {
-    background: #22c55e;
     color: #ffffff;
   }
 
@@ -447,7 +434,7 @@
 
 <div class="gallery-hero">
   <h1 class="page-title">Packing Photos & Videos Gallery</h1>
-  <p class="page-subtitle">Internal repository for staff to view, download, and share consignment proof directly with customers.</p>
+  <p class="page-subtitle">Internal repository for staff to view and download consignment proof directly to their device.</p>
 
   <div class="toolbar">
     <div class="search-box">
@@ -461,10 +448,10 @@
       <button class="filter-btn" onclick="setFilter('video', this)">🎥 Videos</button>
     </div>
 
-    <button class="upload-btn" onclick="openUploadModal()">
+    <a href="https://wa.me/919599588135?text=Hello%20Prasad%2C%20I%20want%20to%20share%20new%20consignment%20packing%20photos%2Fvideos." target="_blank" class="upload-btn">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Upload New Media
-    </button>
+    </a>
   </div>
 </div>
 
@@ -481,12 +468,9 @@
         <div class="client-info">Ramesh Sharma • Furniture Wooden Crating</div>
       </div>
       <div class="card-actions">
-        <a href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" download="APML_CN98421_Packing.jpg" class="action-btn btn-download">
-          ⬇ Download
+        <a href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" download="APML_CN98421_Packing.jpg" class="btn-download">
+          ⬇ Download Photo
         </a>
-        <button class="action-btn btn-whatsapp" onclick="shareWhatsApp('CN-98421', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80')">
-          📲 WhatsApp
-        </button>
       </div>
     </div>
   </div>
@@ -507,12 +491,9 @@
         <div class="client-info">Priya Patel • TV & Appliances Waterproof Wrap</div>
       </div>
       <div class="card-actions">
-        <a href="https://www.w3schools.com/html/mov_bbb.mp4" download="APML_CN98433_Video.mp4" class="action-btn btn-download">
-          ⬇ Download
+        <a href="https://www.w3schools.com/html/mov_bbb.mp4" download="APML_CN98433_Video.mp4" class="btn-download">
+          ⬇ Download Video
         </a>
-        <button class="action-btn btn-whatsapp" onclick="shareWhatsApp('CN-98433', 'https://www.w3schools.com/html/mov_bbb.mp4')">
-          📲 WhatsApp
-        </button>
       </div>
     </div>
   </div>
@@ -528,12 +509,9 @@
         <div class="client-info">Amit Verma • Car Carrier Safe Tie-down</div>
       </div>
       <div class="card-actions">
-        <a href="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" download="APML_CN98450_Vehicle.jpg" class="action-btn btn-download">
-          ⬇ Download
+        <a href="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" download="APML_CN98450_Vehicle.jpg" class="btn-download">
+          ⬇ Download Photo
         </a>
-        <button class="action-btn btn-whatsapp" onclick="shareWhatsApp('CN-98450', 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80')">
-          📲 WhatsApp
-        </button>
       </div>
     </div>
   </div>
@@ -550,30 +528,6 @@
         <p id="modalSub" style="margin:0; font-size:13px; color:#64748b;"></p>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="uploadModal">
-  <div class="modal-content-wrapper" style="padding: 28px; max-width: 500px;">
-    <button class="close-modal-btn" onclick="closeUploadModal()">✕</button>
-    <h3 style="margin-top:0; font-size:22px; color:#0f172a;">Upload Consignment Proof</h3>
-    <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Select a photo or video to add to the employee gallery.</p>
-    
-    <form id="uploadForm" onsubmit="handleLocalUpload(event)">
-      <div style="margin-bottom:14px;">
-        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Consignment No. (CN)</label>
-        <input type="text" id="cnInput" required placeholder="e.g. CN-98500" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; outline:none;">
-      </div>
-      <div style="margin-bottom:14px;">
-        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Customer Name & Item Note</label>
-        <input type="text" id="clientInput" required placeholder="e.g. Vijay Kumar • Sofa Box Packing" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; outline:none;">
-      </div>
-      <div style="margin-bottom:20px;">
-        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Select Photo / Video File</label>
-        <input type="file" id="fileInput" accept="image/*,video/*" required style="width:100%; font-size:13px;">
-      </div>
-      <button type="submit" class="upload-btn" style="width:100%; justify-content:center;">Add to Local Gallery</button>
-    </form>
   </div>
 </div>
 
@@ -631,58 +585,6 @@
     const modal = document.getElementById('previewModal');
     document.getElementById('modalMediaContainer').innerHTML = '';
     modal.classList.remove('active');
-  }
-
-  function openUploadModal() {
-    document.getElementById('uploadModal').classList.add('active');
-  }
-
-  function closeUploadModal() {
-    document.getElementById('uploadModal').classList.remove('active');
-  }
-
-  function shareWhatsApp(cn, mediaUrl) {
-    const text = `Hello! Here is the packing proof for your consignment *${cn}*: ${mediaUrl}`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-  }
-
-  function handleLocalUpload(e) {
-    e.preventDefault();
-    const cn = document.getElementById('cnInput').value;
-    const client = document.getElementById('clientInput').value;
-    const file = document.getElementById('fileInput').files[0];
-
-    if (!file) return;
-
-    const fileUrl = URL.createObjectURL(file);
-    const isVideo = file.type.startsWith('video');
-    const mediaType = isVideo ? 'video' : 'photo';
-
-    const card = document.createElement('div');
-    card.className = 'media-card';
-    card.setAttribute('data-type', mediaType);
-    card.setAttribute('data-title', `${cn} ${client}`);
-
-    card.innerHTML = `
-      <div class="thumbnail-wrapper" onclick="openPreview('${mediaType}', '${fileUrl}', '${cn} - Consignment Proof', 'Client: ${client}')">
-        <span class="badge-media-type">${isVideo ? '🎥 Video' : '📷 Photo'}</span>
-        ${isVideo ? `<video src="${fileUrl}#t=0.5" preload="metadata"></video><div class="play-overlay"><div class="play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>` : `<img src="${fileUrl}" alt="Proof">`}
-      </div>
-      <div class="media-details">
-        <div>
-          <h3 class="cn-number">${cn}</h3>
-          <div class="client-info">${client}</div>
-        </div>
-        <div class="card-actions">
-          <a href="${fileUrl}" download="${cn}_proof" class="action-btn btn-download">⬇ Download</a>
-          <button class="action-btn btn-whatsapp" onclick="shareWhatsApp('${cn}', '${fileUrl}')">📲 WhatsApp</button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('mediaGrid').prepend(card);
-    closeUploadModal();
-    document.getElementById('uploadForm').reset();
   }
 </script>
 
