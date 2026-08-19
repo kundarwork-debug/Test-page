@@ -1,413 +1,1630 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APML - Quote Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>APML Portal - Operations Hub & Workspace</title>
+  <meta name="description" content="APML Portal is the official operations hub for quotation drafting, hub & branch directory lookup, freight rate calculators, and packing standards for APML's nationwide logistics network.">
+  <meta name="keywords" content="APML Portal, APML Operations Hub, APML Hub Directory, APML Quotation Studio, APML Rate Calculator">
+  <link rel="canonical" href="https://kundarwork-debug.github.io/Side-Quote-Generator/index.html">
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:title" content="APML Portal - Operations Hub & Workspace">
+  <meta property="og:description" content="One portal for quotation drafting, hub directory lookup, freight rate calculators, and packing standards.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kundarwork-debug.github.io/Side-Quote-Generator/index.html">
+
+  <!-- Network/Hub SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+
+  <!-- STANDARD COMMON CSS -->
+  <link rel="stylesheet" href="common.css?v=2.2">
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    :root {
+      --primary: #b91c1c;
+      --primary-dark: #881337;
+      --primary-soft: rgba(185, 28, 28, 0.08);
+      --primary-glow: rgba(185, 28, 28, 0.28);
+      --bg-base: #f8fafc;
+      --surface-card: rgba(255, 255, 255, 0.88);
+      --surface-border: rgba(226, 232, 240, 0.9);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+      --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      --shadow-hover: 0 20px 35px -10px rgba(185, 28, 28, 0.14), 0 1px 3px rgba(0, 0, 0, 0.05);
+
+      /* Reel Palette */
+      --reel-red: #C0392B;
+      --reel-red-deep: #8E2A20;
+      --reel-navy: #16213E;
+      --reel-paper: #FDFBF9;
+      --reel-tint: #FDEEEA;
+      --reel-amber: #E8A33D;
+      --reel-ink-soft: #5B6472;
+      --reel-line: #EAD9D4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Mesh */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 18% 18%, rgba(185, 28, 28, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 82% 80%, rgba(225, 29, 72, 0.05) 0%, transparent 45%);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    /* =========================================================
+       HERO STAGE & MULTI-ORBITAL LOGISTICS RIG
+       ========================================================= */
+    .hero-stage {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 95px 20px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .badge-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(30px, 6vw, 44px);
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary) 0%, #e11d48 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(14px, 3.5vw, 16px);
+      font-weight: 500;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.55;
+    }
+
+    /* MULTI-ORBITAL LOGISTICS RIG */
+    .multi-orbit-stage {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Radial Background Ripple Waves */
+    .beacon-wave {
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      opacity: 0;
+      animation: beaconRipple 3.6s cubic-bezier(0.1, 0.85, 0.25, 1) infinite;
+      pointer-events: none;
+    }
+    .beacon-wave:nth-child(2) { animation-delay: 1.2s; }
+    .beacon-wave:nth-child(3) { animation-delay: 2.4s; }
+
+    /* Orbital Rings */
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      transform-origin: center center;
+    }
+
+    .orbit-ring-inner {
+      width: 120px;
+      height: 120px;
+      border: 1.5px dashed rgba(185, 28, 28, 0.35);
+      animation: orbitRotate 10s linear infinite;
+    }
+
+    .orbit-ring-middle {
+      width: 175px;
+      height: 175px;
+      border: 1.5px dashed rgba(225, 29, 72, 0.3);
+      animation: orbitRotateRev 16s linear infinite;
+    }
+
+    .orbit-ring-outer {
+      width: 230px;
+      height: 230px;
+      border: 1.5px dashed rgba(185, 28, 28, 0.25);
+      animation: orbitRotate 22s linear infinite;
+    }
+
+    /* Orbiting Items */
+    .orbit-node {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      box-shadow: 0 3px 10px rgba(185, 28, 28, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      transition: transform 0.25s ease;
+    }
+
+    .orbit-node .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Node Positioning */
+    .node-top {
+      top: -14px;
+      left: calc(50% - 14px);
+    }
+
+    .node-bottom {
+      bottom: -14px;
+      left: calc(50% - 14px);
+    }
+
+    .node-right {
+      right: -14px;
+      top: calc(50% - 14px);
+    }
+
+    .node-left {
+      left: -14px;
+      top: calc(50% - 14px);
+    }
+
+    /* Node Themes */
+    .node-truck {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .node-car {
+      color: #e11d48;
+      border-color: #e11d48;
+      box-shadow: 0 3px 10px rgba(225, 29, 72, 0.25);
+    }
+
+    .node-carton {
+      color: #d97706;
+      border-color: #d97706;
+      box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
+    }
+
+    .node-hub {
+      color: #0284c7;
+      border-color: #0284c7;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
+    }
+
+    /* Counter-rotation to keep icons oriented */
+    .orbit-ring-inner .orbit-node {
+      animation: counterOrbit 10s linear infinite;
+    }
+
+    .orbit-ring-middle .orbit-node {
+      animation: counterOrbitRev 16s linear infinite;
+    }
+
+    .orbit-ring-outer .orbit-node {
+      animation: counterOrbit 22s linear infinite;
+    }
+
+    /* Central Hub Emblem */
+    .beacon-core-disc {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 
+        0 12px 28px -4px rgba(185, 28, 28, 0.3),
+        0 0 0 4px rgba(185, 28, 28, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      z-index: 5;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+      animation: floatMotion 3.8s ease-in-out infinite alternate;
+    }
+
+    .beacon-core-disc .material-symbols-outlined {
+      font-size: 32px;
+      transition: transform 0.35s ease;
+    }
+
+    /* Hover Physics */
+    .multi-orbit-stage:hover .beacon-core-disc {
+      transform: scale(1.18);
+      box-shadow: 
+        0 18px 36px -6px rgba(185, 28, 28, 0.45),
+        0 0 0 8px rgba(185, 28, 28, 0.14);
+    }
+
+    .multi-orbit-stage:hover .beacon-core-disc .material-symbols-outlined {
+      transform: rotate(45deg);
+    }
+
+    .multi-orbit-stage:hover .orbit-ring,
+    .multi-orbit-stage:hover .orbit-node {
+      animation-play-state: paused;
+    }
+
+    /* Keyframes */
+    @keyframes orbitRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes orbitRotateRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes counterOrbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes counterOrbitRev {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes beaconRipple {
+      0% { transform: scale(0.65); opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    @keyframes floatMotion {
+      0% { transform: translateY(-3px); }
+      100% { transform: translateY(4px); }
+    }
+
+    /* =========================================================
+       HIGHLIGHT REEL ANIMATED STAGE
+       ========================================================= */
+    .reel-section {
+      max-width: 960px;
+      margin: 10px auto 40px;
+      padding: 0 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reel-section .player {
+      width: 100%;
+      aspect-ratio: 16/9;
+      min-height: 380px;
+      background: var(--reel-paper);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--surface-border);
+      box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.12);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .reel-section .progress {
+      display: flex;
+      gap: 6px;
+      padding: 14px 18px 0 18px;
+      z-index: 5;
+    }
+
+    .reel-section .seg {
+      flex: 1;
+      height: 3px;
+      background: rgba(22, 33, 62, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .reel-section .seg > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--reel-red);
+      border-radius: 3px;
+    }
+
+    .reel-section .seg.done > i { width: 100%; }
+
+    .reel-section .stage {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .reel-section .scene {
+      position: absolute;
+      inset: 0;
+      padding: 30px 44px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .reel-section .scene.active {
+      display: flex;
+      animation: sceneIn 0.6s ease forwards;
+    }
+
+    @keyframes sceneIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reel-section .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--reel-red);
+      background: var(--reel-tint);
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .reel-section .eyebrow .num {
+      background: var(--reel-red);
+      color: #fff;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .reel-section h2.scene-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 3.5vw, 34px);
+      color: var(--reel-navy);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      max-width: 520px;
+    }
+
+    .reel-section h2.scene-title span {
+      color: var(--reel-red);
+    }
+
+    .reel-section .scene-sub {
+      margin-top: 10px;
+      font-size: 13.5px;
+      color: var(--reel-ink-soft);
+      max-width: 440px;
+      line-height: 1.5;
+    }
+
+    .reel-section .pills {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 480px;
+    }
+
+    .reel-section .pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--reel-navy);
+      background: #fff;
+      border: 1px solid var(--reel-line);
+      padding: 6px 11px;
+      border-radius: 100px;
+    }
+
+    .reel-section .content-row {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      height: 100%;
+    }
+
+    .reel-section .text-col { flex: 1; min-width: 0; }
     
-    <!-- GitHub Profile Picture as Favicon -->
-    <link rel="icon" type="image/png" href="https://github.com/kundarwork-debug.png">
+    .reel-section .visual-col {
+      flex: 0 0 270px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mockups */
+    .reel-section .mock {
+      width: 250px;
+      background: #fff;
+      border: 1px solid var(--reel-line);
+      border-radius: 14px;
+      padding: 15px;
+      box-shadow: 0 16px 35px -12px rgba(22, 33, 62, 0.2);
+    }
+
+    .reel-section .mock-bar {
+      height: 7px;
+      width: 60%;
+      background: var(--reel-tint);
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .reel-section .mock-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--reel-line);
+      font-size: 11px;
+      color: var(--reel-ink-soft);
+    }
+
+    .reel-section .mock-row b { color: var(--reel-navy); font-size: 11.5px; }
+    .reel-section .mock-row:last-child { border-bottom: none; }
     
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+    .reel-section .mock-btn {
+      margin-top: 12px;
+      background: var(--reel-red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+    }
 
-        body {
-            background-color: #fff5f5;
-            color: #1a1a1a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+    .reel-section .mock-search {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--reel-line);
+      border-radius: 100px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--reel-ink-soft);
+      margin-bottom: 10px;
+    }
 
-        /* --- ANIMATIONS DEFINITIONS --- */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .reel-section .mock-chip-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
 
-        @keyframes pulseGlow {
-            0% {
-                box-shadow: 0 0 0 0 rgba(163, 18, 18, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 14px rgba(163, 18, 18, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(163, 18, 18, 0);
-            }
-        }
+    .reel-section .mock-chip {
+      font-size: 9px;
+      background: var(--reel-tint);
+      color: var(--reel-red);
+      padding: 3px 7px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
 
-        /* Top Navigation */
-        .top-nav {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
+    .reel-section .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
 
-        .top-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #b71c1c;
-            transition: transform 0.3s ease;
-        }
+    .reel-section .mock-card {
+      background: var(--reel-paper);
+      border: 1px solid var(--reel-line);
+      border-radius: 8px;
+      height: 42px;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .top-avatar:hover {
-            transform: rotate(15deg) scale(1.05);
-        }
+    .reel-section .mock-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--reel-amber), var(--reel-red));
+      opacity: 0.85;
+    }
 
-        .brand-name {
-            font-weight: 800;
-            font-size: 18px;
-            color: #b71c1c;
-            letter-spacing: 0.5px;
-        }
+    .reel-section .mock-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px dashed var(--reel-line);
+    }
 
-        /* Main Section Container */
-        .content-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 20px;
-        }
+    .reel-section .mock-stat:last-child { border: none; }
+    .reel-section .mock-stat b { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--reel-red); }
+    .reel-section .mock-stat span { font-size: 10.5px; color: var(--reel-ink-soft); }
 
-        /* Animated Hero Elements */
-        .pill-badge {
-            background-color: #ffffff;
-            color: #b71c1c;
-            border: 1px solid #ffcdd2;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            animation: fadeInUp 0.6s ease-out 0.1s forwards;
-            opacity: 0;
-        }
+    /* Scene Orbit */
+    .reel-section .orbit-wrap {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            color: #111111;
-            line-height: 1.2;
-            animation: fadeInUp 0.6s ease-out 0.2s forwards;
-            opacity: 0;
-        }
+    .reel-section .ring {
+      position: absolute;
+      border: 1.5px dashed rgba(192, 57, 43, 0.35);
+      border-radius: 50%;
+    }
 
-        h1 span {
-            color: #b71c1c;
-        }
+    .reel-section .ring.r1 { width: 100%; height: 100%; animation: spin 30s linear infinite; }
+    .reel-section .ring.r2 { width: 70%; height: 70%; animation: spin 22s linear infinite reverse; }
+    .reel-section .ring.r3 { width: 42%; height: 42%; animation: spin 16s linear infinite; }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        .subtitle {
-            color: #666666;
-            font-size: 15px;
-            line-height: 1.5;
-            max-width: 480px;
-            animation: fadeInUp 0.6s ease-out 0.3s forwards;
-            opacity: 0;
-        }
+    .reel-section .core {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--reel-red), var(--reel-red-deep));
+      box-shadow: 0 0 0 6px var(--reel-tint);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        /* Primary Action Button with Pulse */
-        .btn-primary {
-            display: inline-block;
-            width: 100%;
-            max-width: 400px;
-            background-color: #a31212;
-            color: #ffffff;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-top: 10px;
-            animation: fadeInUp 0.6s ease-out 0.4s forwards, pulseGlow 2.5s infinite 1.2s;
-            opacity: 0;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }
+    .reel-section .core::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
 
-        .btn-primary:hover {
-            background-color: #820e0e;
-            transform: translateY(-3px);
-        }
+    .reel-section .sat {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid var(--reel-line);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        /* Feature Tags */
-        .features-list {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            animation: fadeInUp 0.6s ease-out 0.5s forwards;
-            opacity: 0;
-        }
+    .reel-section .sat.s1 { top: 6%; left: 50%; transform: translateX(-50%); }
+    .reel-section .sat.s2 { bottom: 6%; left: 50%; transform: translateX(-50%); }
+    .reel-section .sat.s3 { top: 50%; left: 2%; transform: translateY(-50%); }
+    .reel-section .sat.s4 { top: 50%; right: 2%; transform: translateY(-50%); }
 
-        .feature-tag {
-            background-color: #ffffff;
-            border: 1px solid #f0f0f0;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #444444;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: transform 0.2s ease;
-        }
+    .reel-section .hero-scene { align-items: center; text-align: center; }
+    .reel-section .hero-scene h2.scene-title { max-width: none; }
+    .reel-section .hero-scene .scene-sub { max-width: 440px; margin-left: auto; margin-right: auto; }
 
-        .feature-tag:hover {
-            transform: scale(1.03);
-        }
+    .reel-section .closing { align-items: center; text-align: center; justify-content: center; }
+    .reel-section .closing .url {
+      margin-top: 18px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      color: var(--reel-red);
+      font-weight: 700;
+      background: var(--reel-tint);
+      padding: 7px 15px;
+      border-radius: 100px;
+    }
+    .reel-section .closing .credit { margin-top: 20px; font-size: 11px; color: var(--reel-ink-soft); }
 
-        /* Scrollable Cards with Fade In */
-        .scroll-section {
-            width: 100%;
-            max-width: 600px;
-            background: #ffffff;
-            border: 1px solid #ffebee;
-            border-radius: 16px;
-            padding: 24px;
-            margin-top: 30px;
-            text-align: left;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            animation: fadeInUp 0.6s ease-out 0.6s forwards;
-            opacity: 0;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
+    /* Controls */
+    .reel-section .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 0 6px 0;
+    }
 
-        .scroll-section:hover {
-            box-shadow: 0 8px 24px rgba(163, 18, 18, 0.08);
-            transform: translateY(-2px);
-        }
+    .reel-section .ctl-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--surface-border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--reel-navy);
+      font-size: 13px;
+      transition: transform 0.15s ease, background 0.15s ease;
+      box-shadow: var(--shadow-subtle);
+    }
 
-        .section-heading {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .reel-section .ctl-btn:hover { background: var(--reel-tint); }
+    .reel-section .ctl-btn:active { transform: scale(0.92); }
 
-        .section-heading span {
-            color: #b71c1c;
-        }
+    .reel-section #playPauseBtn {
+      width: 38px;
+      height: 38px;
+      background: var(--reel-red);
+      color: #fff;
+      border: none;
+    }
 
-        .section-text {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
+    .reel-section #playPauseBtn:hover { background: var(--reel-red-deep); }
+    
+    .reel-section .dots { display: flex; gap: 6px; margin-left: 6px; }
+    .reel-section .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--reel-line);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .reel-section .dot.active { background: var(--reel-red); transform: scale(1.3); }
 
-        /* Steps list */
-        .steps-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    @media (max-width: 650px) {
+      .reel-section .player { min-height: 440px; }
+      .reel-section .content-row { flex-direction: column-reverse; gap: 18px; }
+      .reel-section .visual-col { flex: 0 0 auto; }
+      .reel-section .scene { padding: 22px 18px; }
+    }
 
-        .step-card {
-            background-color: #fff8f8;
-            border: 1px solid #ffdde1;
-            padding: 14px 16px;
-            border-radius: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            transition: transform 0.2s ease;
-        }
+    /* =========================================================
+       MODERN EQUAL GRID & GLASSMORPHIC CARDS
+       ========================================================= */
+    .workspace-section {
+      max-width: 1180px;
+      margin: 10px auto 40px;
+      padding: 0 20px;
+      width: 100%;
+    }
 
-        .step-card:hover {
-            transform: translateX(4px);
-        }
+    .section-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--surface-border);
+    }
 
-        .step-number {
-            background-color: #b71c1c;
-            color: #fff;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
+    .section-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .step-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 2px;
-        }
+    .section-counter {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
 
-        .step-info p {
-            font-size: 12px;
-            color: #666;
-        }
+    /* Card Grid */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+      gap: 24px;
+      width: 100%;
+    }
 
-        /* Footer Area */
-        footer {
-            margin-top: 50px;
-            margin-bottom: 30px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            animation: fadeInUp 0.6s ease-out 0.7s forwards;
-            opacity: 0;
-        }
+    .module-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--shadow-subtle);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .footer-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            color: #b71c1c;
-            text-transform: uppercase;
-        }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
 
-        .btn-about {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #ffffff;
-            border: 1px solid #ffcdd2;
-            color: #333333;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
+    .module-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(185, 28, 28, 0.3);
+      box-shadow: var(--shadow-hover);
+    }
 
-        .btn-about:hover {
-            transform: translateY(-2px);
-            border-color: #b71c1c;
-        }
+    .module-card:hover::before {
+      opacity: 1;
+    }
 
-        .btn-about img {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
-    </style>
+    /* Card Elements */
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-icon-pill {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: var(--shadow-subtle);
+      transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+    }
+
+    .module-card:hover .card-icon-pill {
+      transform: scale(1.08) rotate(-4deg);
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .card-icon-pill span {
+      font-size: 28px;
+    }
+
+    .status-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(241, 245, 249, 0.8);
+      border: 1px solid var(--surface-border);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.04em;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-description {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .tags-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .micro-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      color: #475569;
+    }
+
+    .card-footer-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-border);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      transition: gap 0.2s ease;
+    }
+
+    .cta-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+    }
+
+    .module-card:hover .cta-arrow {
+      transform: translateX(4px);
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* =========================================================
+       FLOATING METRICS STATUS BAR
+       ========================================================= */
+    .metrics-bar-wrap {
+      max-width: 1180px;
+      margin: 10px auto 30px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .metrics-dock {
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      border-radius: 18px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .metrics-lead {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .metrics-list {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-base);
+      border: 1px solid var(--surface-border);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .metric-val {
+      color: var(--text-main);
+      font-weight: 800;
+      font-feature-settings: "tnum";
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      animation: liveGlow 1.8s infinite;
+    }
+
+    @keyframes liveGlow {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    @media (max-width: 650px) {
+      .hero-stage {
+        padding-top: 80px;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-dock {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .metrics-list {
+        width: 100%;
+        gap: 6px;
+      }
+      .metric-pill {
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <div class="top-nav">
-        <img src="https://github.com/kundarwork-debug.png" alt="Logo" class="top-avatar">
-        <span class="brand-name">APML</span>
-    </div>
+  <!-- Ambient Light Accents -->
+  <div class="ambient-bg"></div>
 
-    <!-- Main Hero Section -->
-    <div class="content-container">
-        <div class="pill-badge">QUOTE GENERATOR</div>
-        
-        <h1>Fast & Accurate <span>Quote Generation</span></h1>
-        
-        <p class="subtitle">
-            Create, customize, and print official two-side quotations in seconds with automated pricing tools.
-        </p>
+  <!-- COMMON HEADER CONTAINER -->
+  <div id="header-container"></div>
 
-        <a href="https://kundarwork-debug.github.io/Test-page/" class="btn-primary">
-            Generate Quote Now →
+  <main>
+    
+    <!-- CENTRAL HERO (TITLE ABOVE, MULTI-ORBITAL TRUCK, CAR, CARTON & HUB BELOW) -->
+    <section class="hero-stage">
+      
+      <div class="badge-capsule">
+        <span class="material-symbols-outlined" style="font-size: 15px;">hub</span>
+        <span>Unified Workspace</span>
+      </div>
+
+      <h1 class="hero-title">
+        One Portal for <span>All Solutions</span>
+      </h1>
+
+      <p class="hero-sub">
+        Work Smarter, Move Faster.
+      </p>
+
+      <!-- Multi-Orbital Animation Stage -->
+      <div class="multi-orbit-stage" title="APML Logistics Hub Active">
+        <!-- Ambient Waves -->
+        <div class="beacon-wave"></div>
+        <div class="beacon-wave"></div>
+        <div class="beacon-wave"></div>
+
+        <!-- 1. Inner Orbit (Carton / Box) -->
+        <div class="orbit-ring orbit-ring-inner">
+          <div class="orbit-node node-carton node-top" title="Packaged Box">
+            <span class="material-symbols-outlined">package_2</span>
+          </div>
+        </div>
+
+        <!-- 2. Middle Orbit (Truck & Warehouse Hub) -->
+        <div class="orbit-ring orbit-ring-middle">
+          <div class="orbit-node node-truck node-left" title="Fleet Logistics Truck">
+            <span class="material-symbols-outlined">local_shipping</span>
+          </div>
+          <div class="orbit-node node-hub node-right" title="Logistics Warehouse Hub">
+            <span class="material-symbols-outlined">location_city</span>
+          </div>
+        </div>
+
+        <!-- 3. Outer Orbit (Car Carrier & Solid Box) -->
+        <div class="orbit-ring orbit-ring-outer">
+          <div class="orbit-node node-car node-top" title="Car Carrier Transport">
+            <span class="material-symbols-outlined">directions_car</span>
+          </div>
+          <div class="orbit-node node-carton node-bottom" title="Consignment Carton">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
+        </div>
+
+        <!-- Center Hub Core -->
+        <div class="beacon-core-disc" title="Central Hub">
+          <span class="material-symbols-outlined">hub</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- HIGHLIGHT REEL ANIMATION SECTION -->
+    <section class="reel-section">
+      <div class="player">
+        <div class="progress" id="progress"></div>
+
+        <div class="stage">
+
+          <!-- Scene 1: Hero -->
+          <section class="scene hero-scene active">
+            <div class="eyebrow"><span class="num">1</span> UNIFIED WORKSPACE</div>
+            <div class="orbit-wrap" style="margin-bottom:14px;">
+              <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+              <div class="core"></div>
+              <div class="sat s1"></div><div class="sat s2"></div><div class="sat s3"></div><div class="sat s4"></div>
+            </div>
+            <h2 class="scene-title">One Portal. <span>Six Tools.</span><br>Zero Chaos.</h2>
+            <p class="scene-sub">The APML Employee Portal brings quotations, hub directories, packing standards and rate calculators into a single, real-time workspace.</p>
+          </section>
+
+          <!-- Scene 2: Quotation Editor -->
+          <section class="scene">
+            <div class="content-row">
+              <div class="text-col">
+                <div class="eyebrow"><span class="num">2</span> DOCUMENTATION</div>
+                <h2 class="scene-title">Dual-branded quotes, <span>built in seconds.</span></h2>
+                <p class="scene-sub">One editor generates client-ready quotations for both Exact Container Logistics and Maxcare Packers &amp; Movers — no duplicate paperwork.</p>
+                <div class="pills">
+                  <span class="pill">📄 A4 PDF Export</span>
+                  <span class="pill">⚙️ Auto-fill Freight Matrix</span>
+                  <span class="pill">🔒 Local Save</span>
+                </div>
+              </div>
+              <div class="visual-col">
+                <div class="mock">
+                  <div class="mock-bar"></div>
+                  <div class="mock-row"><span>Freight</span><b>₹28,500</b></div>
+                  <div class="mock-row"><span>Packing Charges</span><b>₹6,200</b></div>
+                  <div class="mock-row"><span>Loading (Origin)</span><b>₹1,800</b></div>
+                  <div class="mock-row"><span>Unloading (Dest.)</span><b>₹1,800</b></div>
+                  <div class="mock-btn">Apply Standard %</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Scene 3: Hub & Branch Directory -->
+          <section class="scene">
+            <div class="content-row">
+              <div class="text-col">
+                <div class="eyebrow"><span class="num">3</span> DIRECTORY</div>
+                <h2 class="scene-title">Every branch, <span>one search away.</span></h2>
+                <p class="scene-sub">Instant, Firebase-backed lookup for nationwide hubs — search by city, incharge name, phone, or designation and connect in real time.</p>
+                <div class="pills">
+                  <span class="pill">📍 Pan-India Hubs</span>
+                  <span class="pill">☎️ Direct Contacts</span>
+                  <span class="pill">🔄 Real-Time Connected</span>
+                </div>
+              </div>
+              <div class="visual-col">
+                <div class="mock">
+                  <div class="mock-search">🔍 Search city, incharge...</div>
+                  <div class="mock-chip-row">
+                    <span class="mock-chip">GURGAON</span>
+                    <span class="mock-chip">PUNE</span>
+                    <span class="mock-chip">DELHI</span>
+                    <span class="mock-chip">CHENNAI</span>
+                  </div>
+                  <div class="mock-chip-row">
+                    <span class="mock-chip">AHMEDABAD</span>
+                    <span class="mock-chip">HYDERABAD</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Scene 4: Packing Standards Gallery -->
+          <section class="scene">
+            <div class="content-row">
+              <div class="text-col">
+                <div class="eyebrow"><span class="num">4</span> MEDIA LIBRARY</div>
+                <h2 class="scene-title">See the standard, <span>not just read it.</span></h2>
+                <p class="scene-sub">A visual reference library of fleet operations, vehicle loading and carrier lashing — with dedicated categories for bikes, cars, and specialised cartons.</p>
+                <div class="pills">
+                  <span class="pill">🚚 Fleet Logistics</span>
+                  <span class="pill">🏍️ Bike Packaging</span>
+                  <span class="pill">📦 Solid &amp; TV Box</span>
+                </div>
+              </div>
+              <div class="visual-col">
+                <div class="mock">
+                  <div class="mock-bar" style="width:40%;"></div>
+                  <div class="mock-grid">
+                    <div class="mock-card"></div><div class="mock-card"></div>
+                    <div class="mock-card"></div><div class="mock-card"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Scene 5: Operations Hub / Stats -->
+          <section class="scene">
+            <div class="content-row">
+              <div class="text-col">
+                <div class="eyebrow"><span class="num">5</span> PORTAL ACTIVITY</div>
+                <h2 class="scene-title">Built for the <span>field team.</span></h2>
+                <p class="scene-sub">Six active operations modules working together — from the Lite Rate Calculator to the Car Rate Calculator — with live usage tracked across the portal.</p>
+              </div>
+              <div class="visual-col">
+                <div class="mock">
+                  <div class="mock-stat"><span>PDFs Exported</span><b>45</b></div>
+                  <div class="mock-stat"><span>Media Downloads</span><b>36</b></div>
+                  <div class="mock-stat"><span>Active Tools</span><b>6</b></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Scene 6: Closing -->
+          <section class="scene closing">
+            <div class="eyebrow"><span class="num">6</span> APML PORTAL</div>
+            <h2 class="scene-title">Work smarter. <span>Move faster.</span></h2>
+            <p class="scene-sub">Everything your operations team needs — quotations, directories, standards and rates — in one place.</p>
+            <div class="url">kundarwork-debug.github.io/Side-Quote-Generator</div>
+            <div class="credit">Designed &amp; developed by Prasad</div>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="ctl-btn" id="prevBtn" title="Previous Slide">‹</button>
+        <button class="ctl-btn" id="playPauseBtn" title="Play/Pause">❚❚</button>
+        <button class="ctl-btn" id="nextBtn" title="Next Slide">›</button>
+        <div class="dots" id="dots"></div>
+      </div>
+    </section>
+
+    <!-- EQUAL-WEIGHT OPERATIONS UTILITIES -->
+    <section class="workspace-section">
+      
+      <div class="section-bar">
+        <div class="section-heading">
+          <span class="material-symbols-outlined" style="color: var(--primary); font-size: 20px;">grid_view</span>
+          <span>Operations Modules</span>
+        </div>
+        <span class="section-counter">6 Active Tools</span>
+      </div>
+
+      <div class="modules-grid">
+        
+        <!-- 1. Quotation Drafting Studio -->
+        <a href="editor.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">edit_note</span>
+              </div>
+              <span class="status-tag">Documentation</span>
+            </div>
+            <h2 class="card-title">Quotation Drafting Studio</h2>
+            <p class="card-description">Create official quotations with line items, automated freight formulas, GST insurance, and real-time A4 preview.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📄 A4 PDF Export</span>
+              <span class="micro-tag">⚙️ Freight Matrix</span>
+              <span class="micro-tag">🔒 Local Save</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Launch Studio</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
         </a>
 
-        <!-- Features Badges -->
-        <div class="features-list">
-            <div class="feature-tag">⚡ Fast & Simple Interface</div>
-            <div class="feature-tag">🔒 100% Secure & Free</div>
-            <div class="feature-tag">🎨 Fully Customizable Output</div>
+        <!-- 2. Packing Standards Gallery -->
+        <a href="gallery.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">photo_library</span>
+              </div>
+              <span class="status-tag">Media Library</span>
+            </div>
+            <h2 class="card-title">Packing Standards Gallery</h2>
+            <p class="card-description">High-definition media library with video demonstrations and official packaging standards for nationwide consignments.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚚 Fleet Logistics</span>
+              <span class="micro-tag">🏍️ Bike Packaging</span>
+              <span class="micro-tag">🚗 Car Carriers</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Explore Standards</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 3. Hub & Branch Directory -->
+        <a href="hub-details.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">location_city</span>
+              </div>
+              <span class="status-tag">Directory</span>
+            </div>
+            <h2 class="card-title">Hub &amp; Branch Directory</h2>
+            <p class="card-description">Instant lookup for nationwide warehouse hubs, branch HODs, direct phone contacts, and Google Map location pins.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📍 Pan-India Hubs</span>
+              <span class="micro-tag">📞 HOD Contacts</span>
+              <span class="micro-tag">🗺️ Map Navigation</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Access Directory</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 4. APML Lite Rate Calculator -->
+        <a href="APML-Lite.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">inventory_2</span>
+              </div>
+              <span class="status-tag">Volume Pricing</span>
+            </div>
+            <h2 class="card-title">APML Lite Rate Calculator</h2>
+            <p class="card-description">Instant CFT volume calculator with floor constraints, destination routing, and a 450 CFT maximum capacity ceiling.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📦 450 CFT Limit</span>
+              <span class="micro-tag">🏙️ 4 Major Hubs</span>
+              <span class="micro-tag">₹5,000 Base Floor</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Volume</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 5. Car Rate Calculator -->
+        <a href="car-rate.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">directions_car</span>
+              </div>
+              <span class="status-tag">Vehicle Freight</span>
+            </div>
+            <h2 class="card-title">Car Rate Calculator</h2>
+            <p class="card-description">Automated vehicle transport rate estimation with intelligent category detection and 600 KM baseline formulas.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚗 Model Detection</span>
+              <span class="micro-tag">📏 600 KM Base</span>
+              <span class="micro-tag">⚡ Per-KM Slabs</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Transport</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 6. APML Local Rate (Active & Linked) -->
+        <a href="local-rate.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">local_shipping</span>
+              </div>
+              <span class="status-tag">Local Shifting</span>
+            </div>
+            <h2 class="card-title">APML Local Rate</h2>
+            <p class="card-description">Intra-city relocation rate calculation engine with SOP budget rates, CFT limits, and add-on services.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚛 Intra-City</span>
+              <span class="micro-tag">📦 ₹25 / ₹20 CFT</span>
+              <span class="micro-tag">₹5,000 Minimum</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Shifting</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- LIVE METRICS BAR -->
+    <div class="metrics-bar-wrap">
+      <div class="metrics-dock">
+        <div class="metrics-lead">
+          <span class="material-symbols-outlined" style="color: var(--primary); font-size: 18px;">insights</span>
+          <span>Portal Activity</span>
         </div>
 
-        <!-- SCROLLABLE SECTION 1: How It Works -->
-        <div class="scroll-section">
-            <div class="section-heading">
-                <span>📌</span> How It Works
-            </div>
-            <p class="section-text">
-                Follow three simple steps to generate a print-ready, professional quotation for clients.
-            </p>
-            
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-info">
-                        <h4>Enter Item Details</h4>
-                        <p>Input item lists, distance metrics, and service requirements.</p>
-                    </div>
-                </div>
+        <div class="metrics-list">
+          <div class="metric-pill">
+            <span class="pulse-dot"></span>
+            <span class="metric-label">Online Users:</span>
+            <span class="metric-val" id="liveUserCount">1</span>
+          </div>
 
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-info">
-                        <h4>Review Breakdown</h4>
-                        <p>Check the automated price calculation and charges schedule.</p>
-                    </div>
-                </div>
+          <div class="metric-pill">
+            <span class="material-symbols-outlined" style="font-size: 15px; color: #b91c1c;">picture_as_pdf</span>
+            <span class="metric-label">PDFs Exported:</span>
+            <span class="metric-val" id="totalPdfDownloads">0</span>
+          </div>
 
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-info">
-                        <h4>Export PDF</h4>
-                        <p>Download or print the two-sided official quotation directly.</p>
-                    </div>
-                </div>
-            </div>
+          <div class="metric-pill">
+            <span class="material-symbols-outlined" style="font-size: 15px; color: #2563eb;">photo_library</span>
+            <span class="metric-label">Media Downloads:</span>
+            <span class="metric-val" id="totalMediaDownloads">0</span>
+          </div>
         </div>
-
-        <!-- SCROLLABLE SECTION 2: Key Features -->
-        <div class="scroll-section">
-            <div class="section-heading">
-                <span>⚙️</span> Built for Field & Office Operations
-            </div>
-            <p class="section-text">
-                Designed for quick access on both mobile and desktop screens. Instant PDF export ensures faster client response times and seamless workflow execution.
-            </p>
-        </div>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-label">BY PRASAD</div>
-        <a href="about.html" class="btn-about">
-            <img src="https://github.com/kundarwork-debug.png" alt="Profile">
-            About Me ↗
-        </a>
-    </footer>
+  </main>
 
+  <!-- COMMON FOOTER CONTAINER -->
+  <div id="footer-container"></div>
+
+  <!-- STANDARD COMMON SCRIPT -->
+  <script src="common.js?v=2.2"></script>
+
+  <!-- HIGHLIGHT REEL CONTROLLER SCRIPT -->
+  <script>
+    (function initHighlightReel() {
+      const reel = document.querySelector('.reel-section');
+      if (!reel) return;
+
+      const scenes = reel.querySelectorAll('.scene');
+      const progressWrap = document.getElementById('progress');
+      const dotsWrap = document.getElementById('dots');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const DURATION = 4200; // ms per scene
+
+      let current = 0;
+      let playing = true;
+      let segStart = null;
+      let rafId = null;
+      let pausedElapsed = 0;
+
+      // Build progress segments + dots
+      scenes.forEach((_, i) => {
+        const seg = document.createElement('div');
+        seg.className = 'seg';
+        seg.innerHTML = '<i></i>';
+        progressWrap.appendChild(seg);
+
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(dot);
+      });
+
+      const segs = reel.querySelectorAll('.seg');
+      const dots = reel.querySelectorAll('.dot');
+
+      function setScene(i) {
+        scenes[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        segs[current].classList.remove('done');
+        segs[current].querySelector('i').style.width = '0%';
+
+        current = (i + scenes.length) % scenes.length;
+
+        scenes[current].classList.add('active');
+        dots[current].classList.add('active');
+
+        segs.forEach((s, idx) => {
+          if (idx < current) { 
+            s.classList.add('done'); 
+            s.querySelector('i').style.width = '100%'; 
+          } else if (idx > current) { 
+            s.classList.remove('done'); 
+            s.querySelector('i').style.width = '0%'; 
+          }
+        });
+      }
+
+      function goTo(i) {
+        setScene(i);
+        pausedElapsed = 0;
+        segStart = null;
+        if (playing) tick();
+      }
+
+      function tick(ts) {
+        if (!playing) return;
+        if (segStart === null) segStart = (ts || performance.now()) - pausedElapsed;
+        const elapsed = (ts || performance.now()) - segStart;
+        const pct = Math.min(100, (elapsed / DURATION) * 100);
+        segs[current].querySelector('i').style.width = pct + '%';
+
+        if (elapsed >= DURATION) {
+          pausedElapsed = 0;
+          segStart = null;
+          setScene(current + 1);
+          rafId = requestAnimationFrame(tick);
+        } else {
+          rafId = requestAnimationFrame(tick);
+        }
+      }
+
+      function play() {
+        playing = true;
+        playPauseBtn.textContent = '❚❚';
+        rafId = requestAnimationFrame((ts) => { 
+          segStart = ts - pausedElapsed; 
+          tick(ts); 
+        });
+      }
+
+      function pause() {
+        playing = false;
+        playPauseBtn.textContent = '▶';
+        cancelAnimationFrame(rafId);
+        if (segStart !== null) pausedElapsed = performance.now() - segStart;
+      }
+
+      playPauseBtn.addEventListener('click', () => playing ? pause() : play());
+      nextBtn.addEventListener('click', () => { pausedElapsed = 0; segStart = null; setScene(current + 1); });
+      prevBtn.addEventListener('click', () => { pausedElapsed = 0; segStart = null; setScene(current - 1); });
+
+      rafId = requestAnimationFrame((ts) => { segStart = ts; tick(ts); });
+    })();
+  </script>
+
+  <!-- FIREBASE REALTIME ANALYTICS LIBRARIES -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- FIREBASE INTEGRATION SCRIPT -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgJ6uRCABWxAHOU1bIY4VuA-nQ0zM3aF8",
+      authDomain: "apml-portal.firebaseapp.com",
+      databaseURL: "https://apml-portal-default-rtdb.firebaseio.com",
+      projectId: "apml-portal",
+      storageBucket: "apml-portal.firebasestorage.app",
+      messagingSenderId: "479017159240",
+      appId: "1:479017159240:web:0853422718e6195b74a67d",
+      measurementId: "G-4H1HT31DYB"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // 1. Live Online Presence Tracker
+    const userSessionId = "user_" + Math.random().toString(36).substring(2, 9);
+    const myPresenceRef = db.ref("presence/" + userSessionId);
+    const allPresenceRef = db.ref("presence");
+
+    db.ref(".info/connected").on("value", (snap) => {
+      if (snap.val() === true) {
+        myPresenceRef.onDisconnect().remove();
+        myPresenceRef.set({ online: true, timestamp: Date.now() });
+      }
+    });
+
+    allPresenceRef.on("value", (snap) => {
+      const activeCount = snap.numChildren() || 1;
+      const countEl = document.getElementById("liveUserCount");
+      if (countEl) countEl.textContent = activeCount.toLocaleString();
+    });
+
+    // 2. PDF Export Counter
+    const totalDownloadsRef = db.ref("analytics/totalPdfDownloads");
+    totalDownloadsRef.on("value", (snap) => {
+      const totalCount = snap.val() || 0;
+      const totalEl = document.getElementById("totalPdfDownloads");
+      if (totalEl) totalEl.textContent = totalCount.toLocaleString();
+    });
+
+    // 3. Media Download Counter
+    const totalMediaRef = db.ref("analytics/totalMediaDownloads");
+    totalMediaRef.on("value", (snap) => {
+      const totalCount = snap.val() || 0;
+      const totalEl = document.getElementById("totalMediaDownloads");
+      if (totalEl) totalEl.textContent = totalCount.toLocaleString();
+    });
+  </script>
 </body>
 </html>
