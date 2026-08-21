@@ -1,838 +1,1643 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="splash-lock">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quotation Editor - APML Support Page</title>
-  
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22none%22 stroke=%22%23b91c1c%22 stroke-width=%229%22/><text x=%2250%22 y=%2262%22 font-size=%2238%22 font-family=%22Arial, Helvetica, sans-serif%22 font-weight=%22900%22 fill=%22%23b91c1c%22 text-anchor=%22middle%22 letter-spacing=%22-1%22>KP</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>APML Portal - Operations Hub & Workspace</title>
+  <meta name="description" content="APML Portal is the official operations hub for quotation drafting, hub & branch directory lookup, freight rate calculators, and packing standards for APML's nationwide logistics network.">
+  <meta name="keywords" content="APML Portal, APML Operations Hub, APML Hub Directory, APML Quotation Studio, APML Rate Calculator">
+  <link rel="canonical" href="https://kundarwork-debug.github.io/Side-Quote-Generator/index.html">
 
-  <link rel="stylesheet" href="common.css">
+  <meta property="og:title" content="APML Portal - Operations Hub & Workspace">
+  <meta property="og:description" content="One portal for quotation drafting, hub directory lookup, freight rate calculators, and packing standards.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kundarwork-debug.github.io/Side-Quote-Generator/index.html">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+
+  <link rel="stylesheet" href="common.css?v=2.2">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
   <style>
     :root {
-      --bg-editor: #f8fafc;
-      --card-bg: #ffffff;
+      --primary: #b91c1c;
+      --primary-dark: #881337;
+      --primary-soft: rgba(185, 28, 28, 0.08);
+      --primary-glow: rgba(185, 28, 28, 0.28);
+      --bg-base: #f8fafc;
+      --surface-card: rgba(255, 255, 255, 0.88);
+      --surface-border: rgba(226, 232, 240, 0.9);
       --text-main: #0f172a;
       --text-muted: #64748b;
-      --border-color: rgba(226, 232, 240, 0.9);
-      --primary: #b91c1c;
-      --primary-dark: #991b1b;
-      --primary-light: #fef2f2;
-      --elevation-1: 0px 2px 6px rgba(0, 0, 0, 0.04);
-      --elevation-2: 0px 8px 20px rgba(0, 0, 0, 0.08);
-      --radius-md: 12px;
-      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+      --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      --shadow-hover: 0 20px 35px -10px rgba(185, 28, 28, 0.14), 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
-      background-color: var(--bg-editor);
+      background-color: var(--bg-base);
       color: var(--text-main);
-      display: flex;
-      flex-direction: column;
       min-height: 100vh;
-    }
-
-    /* Main App Layout */
-    .app {
-      display: flex;
-      flex: 1;
-      margin-top: 64px; /* Clearance for fixed top header */
-      min-height: calc(100vh - 64px);
-    }
-
-    /* Left Control Panel (Material Design UI) */
-    .panel {
-      width: 460px;
-      background: var(--card-bg);
-      border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      box-shadow: var(--elevation-1);
-      z-index: 10;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* Material Tabs */
-    .tabs {
+    /* Ambient Background Mesh */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 18% 18%, rgba(185, 28, 28, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 82% 80%, rgba(225, 29, 72, 0.05) 0%, transparent 45%);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    /* =========================================================
+       HERO STAGE & INTERACTIVE RIG ZONE
+       ========================================================= */
+    .hero-stage {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 95px 32px 10px;
+      text-align: center;
       display: flex;
-      background: #f1f5f9;
-      padding: 6px;
-      gap: 6px;
-      border-bottom: 1px solid var(--border-color);
+      flex-direction: column;
+      align-items: center;
     }
 
-    .tab-btn {
-      flex: 1;
-      padding: 10px 14px;
-      border: none;
-      background: transparent;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      border-radius: 8px;
-      cursor: pointer;
+    .badge-capsule {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn.active {
+      padding: 6px 16px;
       background: #ffffff;
-      color: var(--primary);
-      box-shadow: var(--elevation-1);
-    }
-
-    .panel-body {
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-      max-height: calc(100vh - 180px);
-    }
-
-    /* Form Field Styling */
-    .field-group {
-      margin-bottom: 24px;
-    }
-
-    .field-group-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text-main);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .field-group-title span.material-symbols-outlined {
-      font-size: 18px;
-      color: var(--primary);
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .field label {
-      font-size: 12px;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-pill);
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--primary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 14px;
     }
 
-    .field input,
-    .field textarea,
-    .cost-row input,
-    .term-row textarea {
-      padding: 10px 14px;
-      font-size: 13px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      background: #f8fafc;
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(30px, 6vw, 44px);
+      font-weight: 700;
       color: var(--text-main);
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .field input:focus,
-    .field textarea:focus,
-    .cost-row input:focus,
-    .term-row textarea:focus {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
-    }
-
-    .field textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    /* Dynamic Rows Styling */
-    .cost-row, .term-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
       margin-bottom: 10px;
     }
 
-    .cost-row input[type="text"] { flex: 2; }
-    .cost-row input[type="number"] { flex: 1; }
-    .term-row textarea { flex: 1; }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary) 0%, #e11d48 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-    /* Material Icon Action Buttons */
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--border-color);
-      background: #ffffff;
+    .hero-sub {
+      font-size: clamp(14px, 3.5vw, 16px);
+      font-weight: 500;
       color: var(--text-muted);
-      cursor: pointer;
+      max-width: 520px;
+      line-height: 1.55;
+    }
+
+    .interactive-hero-zone {
+      position: relative;
+      width: min(94vw, 1100px);
+      height: 380px;
+      margin: 10px auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
+      user-select: none;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23fef2f2' stroke='%23b91c1c' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23b91c1c'/%3E%3Ccircle cx='10' cy='11' r='2' fill='%23b91c1c'/%3E%3Ccircle cx='22' cy='11' r='2' fill='%23b91c1c'/%3E%3Ccircle cx='16' cy='23' r='2' fill='%23b91c1c'/%3E%3Cline x1='16' y1='16' x2='10' y2='11' stroke='%23b91c1c' stroke-width='1.5'/%3E%3Cline x1='16' y1='16' x2='22' y2='11' stroke='%23b91c1c' stroke-width='1.5'/%3E%3Cline x1='16' y1='16' x2='16' y2='23' stroke='%23b91c1c' stroke-width='1.5'/%3E%3C/svg%3E") 16 16, crosshair;
     }
 
-    .icon-btn:hover {
-      background: #fef2f2;
+    .beacon-wave {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      opacity: 0;
+      animation: beaconRipple 3.6s cubic-bezier(0.1, 0.85, 0.25, 1) infinite;
+      pointer-events: none;
+    }
+    .beacon-wave:nth-child(2) { animation-delay: 1.2s; }
+    .beacon-wave:nth-child(3) { animation-delay: 2.4s; }
+
+    .orbit-tracks-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .orbit-ring-track {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(185, 28, 28, 0.25);
+      transition: opacity 0.3s ease;
+    }
+
+    .track-inner { width: 120px; height: 120px; }
+    .track-middle { width: 175px; height: 175px; border-color: rgba(225, 29, 72, 0.25); }
+    .track-outer { width: 230px; height: 230px; }
+
+    .beacon-core-disc {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 
+        0 12px 28px -4px rgba(185, 28, 28, 0.3),
+        0 0 0 4px rgba(185, 28, 28, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--primary);
+      z-index: 5;
+      pointer-events: none;
+      transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+    }
+
+    .beacon-core-disc .material-symbols-outlined {
+      font-size: 32px;
+      transition: transform 0.35s ease;
+    }
+
+    .free-nodes-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .free-node {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      margin-top: -16px;
+      margin-left: -16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      box-shadow: 0 3px 10px rgba(185, 28, 28, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform;
+      z-index: 10;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .free-node .material-symbols-outlined {
+      font-size: 17px;
+    }
+
+    .node-truck { color: var(--primary); border-color: var(--primary); }
+    .node-car { color: #e11d48; border-color: #e11d48; box-shadow: 0 3px 10px rgba(225, 29, 72, 0.25); }
+    .node-carton-1, .node-carton-2 { color: #d97706; border-color: #d97706; box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25); }
+    .node-hub { color: #0284c7; border-color: #0284c7; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25); }
+
+    @keyframes beaconRipple {
+      0% { transform: scale(0.65); opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    /* =========================================================
+       WORKSPACE MODULES GRID (1440PX WIDE)
+       ========================================================= */
+    .workspace-section {
+      max-width: 1440px;
+      margin: 20px auto 40px;
+      padding: 0 32px;
+      width: 100%;
+    }
+
+    .section-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .section-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-counter {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+      gap: 24px;
+      width: 100%;
+    }
+
+    .module-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--shadow-subtle);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(185, 28, 28, 0.3);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .module-card:hover::before {
+      opacity: 1;
+    }
+
+    .module-card.disabled {
+      cursor: default;
+      opacity: 0.88;
+    }
+
+    .module-card.disabled:hover {
+      transform: none;
+      border-color: var(--surface-border);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .module-card.disabled:hover::before {
+      opacity: 0;
+    }
+
+    .module-card.disabled:hover .card-icon-pill {
+      transform: none;
+      background: #ffffff;
+      color: var(--primary);
+      border-color: var(--surface-border);
+    }
+
+    .status-tag.coming-soon {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-icon-pill {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: var(--shadow-subtle);
+      transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+    }
+
+    .module-card:hover .card-icon-pill {
+      transform: scale(1.08) rotate(-4deg);
+      background: var(--primary);
+      color: #ffffff;
       border-color: var(--primary);
     }
 
-    .add-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: #fef2f2;
-      border: 1px solid rgba(252, 165, 165, 0.6);
-      color: var(--primary);
-      font-size: 12px;
+    .card-icon-pill span {
+      font-size: 28px;
+    }
+
+    .status-tag {
+      font-size: 10.5px;
       font-weight: 700;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 4px;
+      color: var(--text-muted);
+      background: rgba(241, 245, 249, 0.8);
+      border: 1px solid var(--surface-border);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.04em;
     }
 
-    .add-btn:hover {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    /* Bottom Floating Action Toolbar */
-    .download-bar {
-      padding: 16px 20px;
-      background: #ffffff;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .btn-download {
-      flex: 1;
-      padding: 12px 20px;
-      background: var(--primary);
-      color: #ffffff;
-      border: none;
-      border-radius: 10px;
-      font-size: 14px;
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 19px;
       font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
-      transition: all 0.2s ease;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
     }
 
-    .btn-download:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    /* Right Document Preview Stage */
-    .stage {
-      flex: 1;
-      background: #e2e8f0;
-      padding: 40px;
-      overflow: auto;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    /* Shared Common Fields Box */
-    .shared-box {
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
+    .card-description {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
       margin-bottom: 20px;
     }
 
-    /* Summary Totals Display Box */
-    .totals-box {
-      background: #fef2f2;
-      border: 1px solid rgba(252, 165, 165, 0.6);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-top: 16px;
+    .tags-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
     }
 
-    .totals-box .line {
+    .micro-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      color: #475569;
+    }
+
+    .card-footer-cta {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-border);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      transition: gap 0.2s ease;
+    }
+
+    .card-footer-cta.coming-soon-cta {
+      color: #b45309;
+    }
+
+    .cta-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+    }
+
+    .module-card:hover .cta-arrow {
+      transform: translateX(4px);
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .module-card.disabled:hover .cta-arrow {
+      transform: none;
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    /* =========================================================
+       PORTAL HIGHLIGHT REEL
+       ========================================================= */
+    .reel-section {
+      max-width: 1440px;
+      margin: 8px auto 36px;
+      padding: 0 32px;
+      width: 100%;
+    }
+
+    .reel-player {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      aspect-ratio: 16/9;
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-hover);
+    }
+    .reel-progress { display: flex; gap: 6px; padding: 14px 18px 0 18px; z-index: 5; }
+    .reel-seg { flex: 1; height: 3px; background: var(--primary-soft); border-radius: 3px; overflow: hidden; }
+    .reel-seg > i { display: block; height: 100%; width: 0%; background: var(--primary); border-radius: 3px; }
+    .reel-seg.done > i { width: 100%; }
+    .reel-stage { position: relative; flex: 1; overflow: hidden; }
+    .reel-scene {
+      position: absolute; inset: 0; padding: 32px 40px;
+      display: none; flex-direction: column; justify-content: center; opacity: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .reel-scene.active { display: flex; animation: reelSceneIn 0.6s ease forwards; }
+    @keyframes reelSceneIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .reel-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+      font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary);
+      background: var(--primary-soft); padding: 6px 12px; border-radius: var(--radius-pill); margin-bottom: 16px;
+    }
+    .reel-eyebrow .reel-num {
+      background: var(--primary); color: #fff; width: 16px; height: 16px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10px;
+    }
+    .reel-scene h3 {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(22px, 3.6vw, 32px);
+      color: var(--text-main); line-height: 1.12; letter-spacing: -0.01em; max-width: 460px; margin: 0;
+    }
+    .reel-scene h3 span { color: var(--primary); }
+    .reel-scene p { margin-top: 10px; font-size: 13.5px; color: var(--text-muted); max-width: 400px; line-height: 1.5; font-weight: 500; }
+    .reel-pills { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; max-width: 440px; }
+    .reel-pill {
+      font-size: 11.5px; font-weight: 600; color: var(--text-main); background: #fff;
+      border: 1px solid var(--surface-border); padding: 6px 11px; border-radius: var(--radius-pill);
+    }
+    .reel-row { display: flex; align-items: center; gap: 32px; height: 100%; }
+    .reel-text { flex: 1; min-width: 0; }
+    .reel-visual { flex: 0 0 240px; display: flex; align-items: center; justify-content: center; }
+    .reel-mock {
+      width: 220px; background: #fff; border: 1px solid var(--surface-border); border-radius: 14px;
+      padding: 14px; box-shadow: var(--shadow-subtle);
+    }
+    .reel-mock-bar { height: 7px; width: 60%; background: var(--primary-soft); border-radius: 4px; margin-bottom: 12px; }
+    .reel-mock-row {
+      display: flex; justify-content: space-between; align-items: center; padding: 8px 0;
+      border-bottom: 1px dashed var(--surface-border); font-size: 10.5px; color: var(--text-muted); font-weight: 500;
+    }
+    .reel-mock-row b { color: var(--text-main); font-size: 11px; }
+    .reel-mock-row:last-child { border-bottom: none; }
+    .reel-mock-btn { margin-top: 12px; background: var(--primary); color: #fff; font-size: 10.5px; font-weight: 700; text-align: center; padding: 8px; border-radius: 8px; }
+    .reel-mock-search { display: flex; align-items: center; gap: 6px; border: 1px solid var(--surface-border); border-radius: var(--radius-pill); padding: 8px 11px; font-size: 10.5px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
+    .reel-chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+    .reel-chip { font-size: 8.5px; background: var(--primary-soft); color: var(--primary); padding: 4px 8px; border-radius: var(--radius-pill); font-weight: 700; }
+    .reel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .reel-card { background: var(--bg-base); border: 1px solid var(--surface-border); border-radius: 8px; height: 38px; position: relative; overflow: hidden; }
+    .reel-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, #e8a33d, var(--primary)); opacity: 0.85; }
+    .reel-stat { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px dashed var(--surface-border); }
+    .reel-stat:last-child { border: none; }
+    .reel-stat b { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--primary); }
+    .reel-stat span { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+    .reel-orbit-wrap { width: 170px; height: 170px; position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .reel-ring { position: absolute; border: 1.5px dashed var(--primary-glow); border-radius: 50%; }
+    .reel-ring.r1 { width: 100%; height: 100%; animation: reelSpin 30s linear infinite; }
+    .reel-ring.r2 { width: 70%; height: 70%; animation: reelSpin 22s linear infinite reverse; }
+    @keyframes reelSpin { to { transform: rotate(360deg); } }
+    .reel-core {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--primary), var(--primary-dark));
+      box-shadow: 0 0 0 7px var(--primary-soft); z-index: 2; display: flex; align-items: center; justify-content: center;
+    }
+    .reel-core::after { content: ""; width: 8px; height: 8px; background: #fff; border-radius: 50%; opacity: 0.85; }
+    .reel-hero { align-items: center; text-align: center; }
+    .reel-hero h3 { max-width: none; }
+    .reel-hero p { max-width: 380px; margin-left: auto; margin-right: auto; }
+    .reel-closing { align-items: center; text-align: center; justify-content: center; }
+    .reel-closing .reel-url {
+      margin-top: 16px; font-family: 'Space Grotesk', sans-serif; font-size: 11px; color: var(--primary);
+      font-weight: 700; background: var(--primary-soft); padding: 7px 14px; border-radius: var(--radius-pill);
+    }
+    .reel-credit { margin-top: 20px; font-size: 10.5px; color: var(--text-muted); }
+    .reel-controls { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 0 16px 0; }
+    .reel-ctl-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--surface-border); background: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main);
+      font-size: 12px; transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .reel-ctl-btn:hover { background: var(--primary-soft); }
+    .reel-ctl-btn:active { transform: scale(0.92); }
+    #reelPlayPause { width: 36px; height: 36px; background: var(--primary); color: #fff; border: none; }
+    #reelPlayPause:hover { background: var(--primary-dark); }
+    .reel-dots { display: flex; gap: 6px; margin-left: 6px; }
+    .reel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--surface-border); cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+    .reel-dot.active { background: var(--primary); transform: scale(1.3); }
+
+    /* =========================================================
+       METRICS DOCK
+       ========================================================= */
+    .metrics-bar-wrap {
+      max-width: 1440px;
+      margin: 10px auto 30px;
+      padding: 0 32px;
+      width: 100%;
+    }
+
+    .metrics-dock {
+      background: #ffffff;
+      border: 1px solid var(--surface-border);
+      border-radius: 18px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .metrics-lead {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 13px;
-      margin-bottom: 6px;
+      font-weight: 700;
       color: var(--text-main);
     }
 
-    .totals-box .line.total {
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--primary);
-      border-top: 1px dashed rgba(185, 28, 28, 0.3);
-      padding-top: 6px;
-      margin-bottom: 0;
+    .metrics-list {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    @media (max-width: 1024px) {
-      .app { flex-direction: column; }
-      .panel { width: 100%; }
-      .stage { padding: 20px 10px; }
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-base);
+      border: 1px solid var(--surface-border);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .metric-val {
+      color: var(--text-main);
+      font-weight: 800;
+      font-feature-settings: "tnum";
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      animation: liveGlow 1.8s infinite;
+    }
+
+    @keyframes liveGlow {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* =========================================================
+       FLOATING SUPPORT ACTION BUTTON & SPEECH BUBBLE
+       ========================================================= */
+    .support-fab {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+      text-decoration: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .support-fab-link {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .support-msg-bubble {
+      background-color: #ffffff;
+      color: #0f172a;
+      border: 2px solid #0f172a;
+      box-shadow: 4px 4px 0px #0f172a;
+      padding: 14px 20px;
+      border-radius: 20px 20px 0 20px;
+      font-size: 14px;
+      font-weight: 600;
+      max-width: 270px;
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+      transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
+      line-height: 1.45;
+      user-select: none;
+    }
+
+    .support-msg-bubble.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .support-fab-link:hover .support-msg-bubble {
+      transform: translateY(-2px) scale(1);
+      box-shadow: 6px 6px 0px #0f172a;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      background-color: #0f172a;
+      margin-left: 2px;
+      animation: cursorBlink 1s step-end infinite;
+    }
+    @keyframes cursorBlink { 50% { opacity: 0; } }
+
+    .support-btn {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 3px solid #0f172a;
+      box-shadow: 4px 4px 0px #0f172a;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .support-avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .support-fab-link:hover .support-btn {
+      transform: translateY(-3px);
+      box-shadow: 6px 6px 0px #0f172a;
+    }
+
+    /* Mobile Adaptations */
+    @media (max-width: 768px) {
+      .reel-section {
+        display: none !important;
+      }
+
+      .interactive-hero-zone {
+        display: none !important;
+      }
+
+      .splash-screen {
+        display: none !important;
+      }
+
+      .hero-stage {
+        padding: 80px 16px 24px;
+      }
+      .workspace-section,
+      .metrics-bar-wrap {
+        padding: 0 16px;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-dock {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .metrics-list {
+        width: 100%;
+        gap: 6px;
+      }
+      .metric-pill {
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+      .support-fab {
+        bottom: 20px;
+        right: 20px;
+      }
+      .support-msg-bubble {
+        max-width: 220px;
+        font-size: 12.5px;
+        padding: 10px 14px;
+      }
+      .support-btn {
+        width: 54px;
+        height: 54px;
+      }
     }
   </style>
 </head>
-<body>
+<body class="splash-lock">
+
+  <style>
+    html.splash-lock, body.splash-lock { overflow: hidden; height: 100%; }
+
+    @media (max-width: 768px) {
+      html.splash-lock, body.splash-lock { overflow: auto !important; height: auto !important; }
+    }
+
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: radial-gradient(circle at 50% 40%, #ffffff 0%, var(--bg-base) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 500ms ease, visibility 500ms ease;
+    }
+    .splash-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .splash-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 10px var(--primary-soft);
+      margin-bottom: 22px;
+      animation: splashPulse 1.6s ease-in-out infinite;
+    }
+    .splash-icon .material-symbols-outlined { color: #fff; font-size: 26px; }
+    @keyframes splashPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    .splash-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 6vw, 46px);
+      letter-spacing: 0.02em;
+      color: var(--text-main);
+      display: flex;
+    }
+    .splash-letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(16px) scale(0.85);
+      animation: splashLetterIn 400ms cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+    }
+    .splash-letter.accent { color: var(--primary); }
+    @keyframes splashLetterIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .splash-bar {
+      margin-top: 26px;
+      width: 160px;
+      height: 3px;
+      background: var(--primary-soft);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .splash-bar i { display: block; height: 100%; width: 0%; background: var(--primary); border-radius: 3px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .splash-icon { animation: none; }
+      .splash-letter { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+
+  <div class="splash-screen" id="splashScreen" role="presentation" aria-hidden="true">
+    <div class="splash-icon">
+      <span class="material-symbols-outlined">hub</span>
+    </div>
+    <h1 class="splash-title" id="splashTitle"></h1>
+    <div class="splash-bar"><i id="splashBarFill"></i></div>
+  </div>
+
+  <script>
+    (function () {
+      if (window.innerWidth <= 768) {
+        document.documentElement.classList.remove('splash-lock');
+        document.body.classList.remove('splash-lock');
+        const splash = document.getElementById('splashScreen');
+        if (splash) splash.style.display = 'none';
+        return;
+      }
+
+      var title = document.getElementById('splashTitle');
+      var text = 'APML PORTAL';
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      text.split('').forEach(function (ch, i) {
+        var span = document.createElement('span');
+        span.className = 'splash-letter' + (i >= 5 ? ' accent' : '');
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        if (!reduceMotion) span.style.animationDelay = (i * 35) + 'ms';
+        title.appendChild(span);
+      });
+
+      var buildTime = reduceMotion ? 0 : (text.length - 1) * 35 + 400;
+      var holdTime = 850;
+      var fadeTime = 400;
+
+      var barFill = document.getElementById('splashBarFill');
+      barFill.style.transition = 'width ' + (buildTime + holdTime) + 'ms linear';
+      requestAnimationFrame(function () { barFill.style.width = '100%'; });
+
+      setTimeout(function () {
+        var splash = document.getElementById('splashScreen');
+        if (splash) splash.classList.add('hide');
+        document.documentElement.classList.remove('splash-lock');
+        document.body.classList.remove('splash-lock');
+        setTimeout(function () { if (splash) splash.style.display = 'none'; }, fadeTime);
+      }, buildTime + holdTime);
+    })();
+  </script>
+  <div class="ambient-bg"></div>
 
   <div id="header-container"></div>
 
-  <div class="app">
+  <main>
     
-    <div class="panel">
+    <section class="hero-stage">
       
-      <div class="tabs">
-        <button class="tab-btn active" id="tabA" onclick="switchTab('A')">
-          <span class="material-symbols-outlined" style="font-size: 16px;">description</span>
-          <span>Quote A</span>
-        </button>
-        <button class="tab-btn" id="tabB" onclick="switchTab('B')">
-          <span class="material-symbols-outlined" style="font-size: 16px;">description</span>
-          <span>Quote B</span>
-        </button>
+      <div class="badge-capsule">
+        <span class="material-symbols-outlined" style="font-size: 15px;">hub</span>
+        <span>Unified Workspace</span>
       </div>
 
-      <div class="panel-body">
-        
-        <div class="shared-box">
-          <div class="field-group-title">
-            <span class="material-symbols-outlined">person</span>
-            <span>Customer Details</span>
-          </div>
+      <h1 class="hero-title">
+        One Portal for <span>All Solutions</span>
+      </h1>
 
-          <div class="field">
-            <label>Customer Name</label>
-            <input type="text" id="custName" oninput="updateShared('custName', this.value)" placeholder="e.g. Rahul Sharma">
-          </div>
+      <p class="hero-sub">
+        Work Smarter, Move Faster.
+      </p>
 
-          <div class="field">
-            <label>Quotation Number</label>
-            <input type="text" id="quoteNo" oninput="updateShared('quoteNo', this.value)" placeholder="e.g. APML/2026/089">
-          </div>
+      <div class="interactive-hero-zone" id="heroInteractiveZone" title="Move your mouse in this area to form a trailing snake tail!">
+        <div class="beacon-wave"></div>
+        <div class="beacon-wave"></div>
+        <div class="beacon-wave"></div>
 
-          <div class="field">
-            <label>Quotation Date</label>
-            <input type="date" id="quoteDate" onchange="updateShared('quoteDate', this.value)">
-          </div>
-
-          <div class="field">
-            <label>Moving Date</label>
-            <input type="date" id="moveDate" onchange="updateShared('moveDate', this.value)">
-          </div>
-
-          <div class="field">
-            <label>From (Origin)</label>
-            <input type="text" id="fromAddr" oninput="updateShared('fromAddr', this.value)" placeholder="Origin City / Address">
-          </div>
-
-          <div class="field">
-            <label>To (Destination)</label>
-            <input type="text" id="toAddr" oninput="updateShared('toAddr', this.value)" placeholder="Destination City / Address">
-          </div>
+        <div class="orbit-tracks-wrap">
+          <div class="orbit-ring-track track-inner"></div>
+          <div class="orbit-ring-track track-middle"></div>
+          <div class="orbit-ring-track track-outer"></div>
         </div>
 
-        <div class="field-group">
-          <div class="field-group-title">
-            <span class="material-symbols-outlined">domain</span>
-            <span>Company Branding</span>
-          </div>
-
-          <div class="field">
-            <label>Company Name</label>
-            <input type="text" id="companyName" oninput="updateActive('companyName', this.value)">
-          </div>
-
-          <div class="field">
-            <label>Company Tagline / Subtitle</label>
-            <input type="text" id="companyTagline" oninput="updateActive('companyTagline', this.value)">
-          </div>
+        <div class="beacon-core-disc" id="hubCore" title="Central Hub">
+          <span class="material-symbols-outlined">hub</span>
         </div>
 
-        <div class="field-group">
-          <div class="field-group-title">
-            <span class="material-symbols-outlined">payments</span>
-            <span>Cost Particulars</span>
+        <div class="free-nodes-layer" id="nodesLayer">
+          <div class="free-node node-carton-1" id="node1" title="Packaged Box">
+            <span class="material-symbols-outlined">package_2</span>
           </div>
 
-          <div id="costRows"></div>
-          
-          <button class="add-btn" onclick="addCostRow()">
-            <span class="material-symbols-outlined" style="font-size: 16px;">add</span>
-            <span>Add Particular</span>
-          </button>
-        </div>
-
-        <div class="field-group">
-          <div class="field-group-title">
-            <span class="material-symbols-outlined">percent</span>
-            <span>Taxes & Insurance</span>
+          <div class="free-node node-truck" id="node2" title="Fleet Logistics Truck">
+            <span class="material-symbols-outlined">local_shipping</span>
           </div>
 
-          <div class="field">
-            <label>Insurance Charge (%)</label>
-            <input type="number" id="insPercent" step="0.1" oninput="updateActive('insPercent', this.value)">
+          <div class="free-node node-hub" id="node3" title="Logistics Warehouse Hub">
+            <span class="material-symbols-outlined">location_city</span>
           </div>
 
-          <div class="field">
-            <label>GST Rate (%)</label>
-            <input type="number" id="gstPercent" step="0.1" oninput="updateActive('gstPercent', this.value)">
-          </div>
-        </div>
-
-        <div class="totals-box">
-          <div class="line"><span>Subtotal:</span> <span id="lblSubtotal">₹0</span></div>
-          <div class="line"><span>Insurance:</span> <span id="lblInsurance">₹0</span></div>
-          <div class="line"><span>GST:</span> <span id="lblGst">₹0</span></div>
-          <div class="line total"><span>Grand Total:</span> <span id="lblGrandTotal">₹0</span></div>
-        </div>
-
-        <div class="field-group" style="margin-top: 24px;">
-          <div class="field-group-title">
-            <span class="material-symbols-outlined">gavel</span>
-            <span>Terms & Conditions</span>
+          <div class="free-node node-car" id="node4" title="Car Carrier Transport">
+            <span class="material-symbols-outlined">directions_car</span>
           </div>
 
-          <div id="termRows"></div>
-
-          <button class="add-btn" onclick="addTermRow()">
-            <span class="material-symbols-outlined" style="font-size: 16px;">add</span>
-            <span>Add Condition</span>
-          </button>
+          <div class="free-node node-carton-2" id="node5" title="Consignment Carton">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
         </div>
 
       </div>
 
-      <div class="download-bar">
-        <button class="btn-download" onclick="downloadPDF()">
-          <span class="material-symbols-outlined">download</span>
-          <span>Download PDF</span>
-        </button>
-        <span id="pdfStatus" style="font-size: 12px; color: var(--text-muted);"></span>
+    </section>
+
+    <script>
+      (function initSnakeTailOrbitPhysics() {
+        if (window.innerWidth <= 768) return;
+        const zone = document.getElementById('heroInteractiveZone');
+        const core = document.getElementById('hubCore');
+        if (!zone || !core) return;
+        const nodes = [
+          { el: document.getElementById('node1'), radius: 60,   speed:  0.016, angle: 0,                   x: 0, y: 0, vx: 0, vy: 0 },
+          { el: document.getElementById('node2'), radius: 87.5, speed: -0.011, angle: Math.PI,            x: 0, y: 0, vx: 0, vy: 0 },
+          { el: document.getElementById('node3'), radius: 87.5, speed: -0.011, angle: 0,                  x: 0, y: 0, vx: 0, vy: 0 },
+          { el: document.getElementById('node4'), radius: 115,  speed:  0.007, angle: -Math.PI / 2,        x: 0, y: 0, vx: 0, vy: 0 },
+          { el: document.getElementById('node5'), radius: 115,  speed:  0.007, angle:  Math.PI / 2,        x: 0, y: 0, vx: 0, vy: 0 }
+        ];
+        let isInsideZone = false;
+        let mouseX = 0;
+        let mouseY = 0;
+        let coreX = 0, coreY = 0;
+        zone.addEventListener('mousemove', (e) => {
+          const rect = zone.getBoundingClientRect();
+          mouseX = e.clientX - (rect.left + rect.width / 2);
+          mouseY = e.clientY - (rect.top + rect.height / 2);
+          isInsideZone = true;
+        });
+        zone.addEventListener('mouseleave', () => {
+          isInsideZone = false;
+        });
+        zone.addEventListener('touchmove', (e) => {
+          if (!e.touches[0]) return;
+          const rect = zone.getBoundingClientRect();
+          mouseX = e.touches[0].clientX - (rect.left + rect.width / 2);
+          mouseY = e.touches[0].clientY - (rect.top + rect.height / 2);
+          isInsideZone = true;
+        }, { passive: true });
+        zone.addEventListener('touchend', () => {
+          isInsideZone = false;
+        });
+        function render() {
+          if (isInsideZone) {
+            coreX += (mouseX * 0.08 - coreX) * 0.1;
+            coreY += (mouseY * 0.08 - coreY) * 0.1;
+          } else {
+            coreX += (0 - coreX) * 0.08;
+            coreY += (0 - coreY) * 0.08;
+          }
+          core.style.transform = `translate(${coreX}px, ${coreY}px)`;
+          for (let i = 0; i < nodes.length; i++) {
+            const item = nodes[i];
+            item.angle += item.speed;
+
+            let targetX, targetY;
+
+            if (isInsideZone) {
+              if (i === 0) {
+                targetX = mouseX;
+                targetY = mouseY;
+              } else {
+                const leader = nodes[i - 1];
+                const dx = item.x - leader.x;
+                const dy = item.y - leader.y;
+                const dist = Math.hypot(dx, dy) || 1;
+                const spacing = 36;
+
+                targetX = leader.x + (dx / dist) * spacing;
+                targetY = leader.y + (dy / dist) * spacing;
+              }
+
+              item.vx = (item.vx + (targetX - item.x) * 0.22) * 0.68;
+              item.vy = (item.vy + (targetY - item.y) * 0.22) * 0.68;
+            } else {
+              targetX = Math.cos(item.angle) * item.radius;
+              targetY = Math.sin(item.angle) * item.radius;
+
+              item.vx = (item.vx + (targetX - item.x) * 0.08) * 0.82;
+              item.vy = (item.vy + (targetY - item.y) * 0.08) * 0.82;
+            }
+
+            item.x += item.vx;
+            item.y += item.vy;
+            if (item.el) {
+              item.el.style.transform = `translate(${item.x}px, ${item.y}px)`;
+            }
+          }
+
+          requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+      })();
+    </script>
+
+    <section class="reel-section">
+      <div class="section-bar">
+        <div class="section-heading">
+          <span class="material-symbols-outlined" style="color: var(--primary); font-size: 20px;">play_circle</span>
+          <span>Portal Highlights</span>
+        </div>
+        <span class="section-counter">60-Second Tour</span>
       </div>
 
-    </div>
+      <div class="reel-player">
+        <div class="reel-progress" id="reelProgress"></div>
 
-    <div class="stage">
+        <div class="reel-stage">
+
+          <section class="reel-scene reel-hero active">
+            <div class="reel-eyebrow"><span class="reel-num">1</span> UNIFIED WORKSPACE</div>
+            <div class="reel-orbit-wrap">
+              <div class="reel-ring r1"></div><div class="reel-ring r2"></div>
+              <div class="reel-core"></div>
+            </div>
+            <h3>One Portal. <span>Six Tools.</span> Zero Chaos.</h3>
+            <p>Quotations, hub directories, packing standards and rate calculators, in a single real-time workspace.</p>
+          </section>
+
+          <section class="reel-scene">
+            <div class="reel-row">
+              <div class="reel-text">
+                <div class="reel-eyebrow"><span class="reel-num">2</span> DOCUMENTATION</div>
+                <h3>Dual-branded quotes, <span>built in seconds.</span></h3>
+                <p>One editor generates client-ready quotations for both Exact Container Logistics and Maxcare Packers &amp; Movers.</p>
+                <div class="reel-pills">
+                  <span class="reel-pill">📄 A4 PDF Export</span>
+                  <span class="reel-pill">⚙️ Freight Matrix</span>
+                  <span class="reel-pill">🔒 Local Save</span>
+                </div>
+              </div>
+              <div class="reel-visual">
+                <div class="reel-mock">
+                  <div class="reel-mock-bar"></div>
+                  <div class="reel-mock-row"><span>Freight</span><b>₹28,500</b></div>
+                  <div class="reel-mock-row"><span>Packing Charges</span><b>₹6,200</b></div>
+                  <div class="reel-mock-row"><span>Loading (Origin)</span><b>₹1,800</b></div>
+                  <div class="reel-mock-btn">Apply Standard %</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="reel-scene">
+            <div class="reel-row">
+              <div class="reel-text">
+                <div class="reel-eyebrow"><span class="reel-num">3</span> DIRECTORY</div>
+                <h3>Every branch, <span>one search away.</span></h3>
+                <p>Instant, Firebase-backed lookup for nationwide hubs — search by city, incharge name, phone, or designation.</p>
+                <div class="reel-pills">
+                  <span class="reel-pill">📍 Pan-India Hubs</span>
+                  <span class="reel-pill">☎️ Direct Contacts</span>
+                  <span class="reel-pill">🔄 Real-Time Connected</span>
+                </div>
+              </div>
+              <div class="reel-visual">
+                <div class="reel-mock">
+                  <div class="reel-mock-search">🔍 Search city, incharge, phone…</div>
+                  <div class="reel-chip-row">
+                    <span class="reel-chip">GURGAON</span>
+                    <span class="reel-chip">PUNE</span>
+                    <span class="reel-chip">DELHI</span>
+                  </div>
+                  <div class="reel-chip-row">
+                    <span class="reel-chip">AHMEDABAD</span>
+                    <span class="reel-chip">CHENNAI</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="reel-scene">
+            <div class="reel-row">
+              <div class="reel-text">
+                <div class="reel-eyebrow"><span class="reel-num">4</span> MEDIA LIBRARY</div>
+                <h3>See the standard, <span>not just read it.</span></h3>
+                <p>A visual reference library of fleet operations and vehicle loading, with dedicated categories for bikes, cars, and cartons.</p>
+                <div class="reel-pills">
+                  <span class="reel-pill">🚚 Fleet Logistics</span>
+                  <span class="reel-pill">🏍️ Bike Packaging</span>
+                  <span class="reel-pill">📦 Solid &amp; TV Box</span>
+                </div>
+              </div>
+              <div class="reel-visual">
+                <div class="reel-mock">
+                  <div class="reel-mock-bar" style="width:40%;"></div>
+                  <div class="reel-grid">
+                    <div class="reel-card"></div><div class="reel-card"></div>
+                    <div class="reel-card"></div><div class="reel-card"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="reel-scene">
+            <div class="reel-row">
+              <div class="reel-text">
+                <div class="reel-eyebrow"><span class="reel-num">5</span> PORTAL ACTIVITY</div>
+                <h3>Built for the <span>field team.</span></h3>
+                <p>Six active operations modules working together — with live usage tracked across the portal.</p>
+              </div>
+              <div class="reel-visual">
+                <div class="reel-mock">
+                  <div class="reel-stat"><span>PDFs Exported</span><b>45</b></div>
+                  <div class="reel-stat"><span>Media Downloads</span><b>36</b></div>
+                  <div class="reel-stat"><span>Active Tools</span><b>6</b></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="reel-scene reel-closing">
+            <div class="reel-eyebrow"><span class="reel-num">6</span> APML PORTAL</div>
+            <h3>Work smarter. <span>Move faster.</span></h3>
+            <p>Everything your operations team needs, in one place.</p>
+            <div class="reel-url">kundarwork-debug.github.io/Side-Quote-Generator</div>
+            <div class="reel-credit">Designed &amp; developed by Prasad</div>
+          </section>
+
+        </div>
+
+        <div class="reel-controls">
+          <button class="reel-ctl-btn" id="reelPrev">‹</button>
+          <button class="reel-ctl-btn" id="reelPlayPause">❚❚</button>
+          <button class="reel-ctl-btn" id="reelNext">›</button>
+          <div class="reel-dots" id="reelDots"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        if (window.innerWidth <= 768) return;
+
+        const scenes = document.querySelectorAll('.reel-scene');
+        const progressWrap = document.getElementById('reelProgress');
+        const dotsWrap = document.getElementById('reelDots');
+        const playPauseBtn = document.getElementById('reelPlayPause');
+        const DURATION = 4200;
+
+        let current = 0, playing = true, segStart = null, rafId = null, pausedElapsed = 0;
+
+        scenes.forEach((_, i) => {
+          const seg = document.createElement('div');
+          seg.className = 'reel-seg';
+          seg.innerHTML = '<i></i>';
+          progressWrap.appendChild(seg);
+
+          const dot = document.createElement('div');
+          dot.className = 'reel-dot' + (i === 0 ? ' active' : '');
+          dot.addEventListener('click', () => goTo(i));
+          dotsWrap.appendChild(dot);
+        });
+
+        const segs = document.querySelectorAll('.reel-seg');
+        const dots = document.querySelectorAll('.reel-dot');
+        function setScene(i) {
+          scenes[current].classList.remove('active');
+          dots[current].classList.remove('active');
+          segs[current].classList.remove('done');
+          segs[current].querySelector('i').style.width = '0%';
+          current = (i + scenes.length) % scenes.length;
+
+          scenes[current].classList.add('active');
+          dots[current].classList.add('active');
+
+          segs.forEach((s, idx) => {
+            if (idx < current) { s.classList.add('done'); s.querySelector('i').style.width = '100%'; }
+            else if (idx > current) { s.classList.remove('done'); s.querySelector('i').style.width = '0%'; }
+          });
+        }
+
+        function goTo(i) {
+          setScene(i);
+          pausedElapsed = 0;
+          segStart = null;
+          if (playing) rafId = requestAnimationFrame(tick);
+        }
+
+        function tick(ts) {
+          if (!playing) return;
+          if (segStart === null) segStart = ts - pausedElapsed;
+          const elapsed = ts - segStart;
+          const pct = Math.min(100, (elapsed / DURATION) * 100);
+          segs[current].querySelector('i').style.width = pct + '%';
+          if (elapsed >= DURATION) {
+            pausedElapsed = 0;
+            segStart = null;
+            setScene(current + 1);
+            rafId = requestAnimationFrame(tick);
+          } else {
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+
+        function play() {
+          playing = true;
+          playPauseBtn.textContent = '❚❚';
+          rafId = requestAnimationFrame((ts) => { segStart = ts - pausedElapsed; tick(ts); });
+        }
+
+        function pause() {
+          playing = false;
+          playPauseBtn.textContent = '▶';
+          cancelAnimationFrame(rafId);
+          if (segStart !== null) pausedElapsed = performance.now() - segStart;
+        }
+
+        playPauseBtn.addEventListener('click', () => playing ? pause() : play());
+        document.getElementById('reelNext').addEventListener('click', () => { pausedElapsed = 0; segStart = null; setScene(current + 1); });
+        document.getElementById('reelPrev').addEventListener('click', () => { pausedElapsed = 0; segStart = null; setScene(current - 1); });
+        rafId = requestAnimationFrame((ts) => { segStart = ts; tick(ts); });
+      })();
+    </script>
+
+    <section class="workspace-section">
       
-      <div id="qPaper" style="width:794px; min-height:1123px; background:#fff; padding:36px; font-family:'Segoe UI',Arial,sans-serif; color:#111; box-shadow:0 8px 30px rgba(0,0,0,0.15); display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box; margin:0 auto; position:relative;">
-        
-        <div>
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #b91c1c; padding-bottom:14px; margin-bottom:20px;">
-            <div>
-              <h1 id="pCompName" style="font-size:26px; font-weight:800; color:#b91c1c; margin:0 0 4px 0; text-transform:uppercase; letter-spacing:-0.5px;">APML LOGISTICS</h1>
-              <div id="pCompTagline" style="font-size:12px; color:#555; font-weight:600;">PACKERS AND MOVERS</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:20px; font-weight:800; color:#222; text-transform:uppercase; letter-spacing:0.5px;">QUOTATION</div>
-              <div style="font-size:11px; color:#666; margin-top:2px;">Original Copy</div>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; background:#fcf8f8; padding:14px; border:1px solid #fca5a5; border-radius:8px; margin-bottom:20px; font-size:12px;">
-            <div>
-              <div style="margin-bottom:6px;"><strong style="color:#b91c1c;">Customer Name:</strong> <span id="pCustName">Rahul Sharma</span></div>
-              <div style="margin-bottom:6px;"><strong style="color:#b91c1c;">From:</strong> <span id="pFromAddr">Delhi</span></div>
-              <div><strong style="color:#b91c1c;">To:</strong> <span id="pToAddr">Mumbai</span></div>
-            </div>
-            <div>
-              <div style="margin-bottom:6px;"><strong style="color:#b91c1c;">Quotation No:</strong> <span id="pQuoteNo">APML/2026/089</span></div>
-              <div style="margin-bottom:6px;"><strong style="color:#b91c1c;">Date:</strong> <span id="pQuoteDate">13/08/2026</span></div>
-              <div><strong style="color:#b91c1c;">Moving Date:</strong> <span id="pMoveDate">18/08/2026</span></div>
-            </div>
-          </div>
-
-          <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px;">
-            <thead>
-              <tr style="background:#b91c1c; color:#fff;">
-                <th style="padding:10px; text-align:left; border:1px solid #b91c1c; width:60px;">S.No</th>
-                <th style="padding:10px; text-align:left; border:1px solid #b91c1c;">Particulars</th>
-                <th style="padding:10px; text-align:right; border:1px solid #b91c1c; width:130px;">Amount (₹)</th>
-              </tr>
-            </thead>
-            <tbody id="pCostBody">
-              </tbody>
-          </table>
-
-          <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
-            <div style="width:280px; font-size:12px;">
-              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #eee;">
-                <span>Subtotal:</span>
-                <strong id="pSubtotal">₹0</strong>
-              </div>
-              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #eee;">
-                <span>Insurance (<span id="pInsRate">0</span>%):</span>
-                <strong id="pInsurance">₹0</strong>
-              </div>
-              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #eee;">
-                <span>GST (<span id="pGstRate">0</span>%):</span>
-                <strong id="pGst">₹0</strong>
-              </div>
-              <div style="display:flex; justify-content:space-between; padding:8px 0; border-top:2px solid #b91c1c; color:#b91c1c; font-size:14px; font-weight:800; margin-top:4px;">
-                <span>Grand Total:</span>
-                <span id="pGrandTotal">₹0</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-bottom:20px;">
-            <div style="font-size:13px; font-weight:800; color:#b91c1c; border-bottom:1px solid #fca5a5; padding-bottom:4px; margin-bottom:8px; text-transform:uppercase;">Terms & Conditions</div>
-            <ol id="pTermsList" style="margin:0; padding-left:18px; font-size:11px; color:#444; line-height:1.6;">
-              </ol>
-          </div>
+      <div class="section-bar">
+        <div class="section-heading">
+          <span class="material-symbols-outlined" style="color: var(--primary); font-size: 20px;">grid_view</span>
+          <span>Operations Modules</span>
         </div>
+        <span class="section-counter">6 Active Tools + 1 In Dev</span>
+      </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid #ddd; padding-top:16px; margin-top:20px; font-size:11px;">
+      <div class="modules-grid">
+        
+        <a href="editor.html" class="module-card">
           <div>
-            <div style="font-weight:700; color:#333;">Thank you for your business!</div>
-            <div style="color:#777; margin-top:2px;">This is a computer-generated quotation.</div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">edit_note</span>
+              </div>
+              <span class="status-tag">Documentation</span>
+            </div>
+            <h2 class="card-title">Quotation Drafting Studio</h2>
+            <p class="card-description">Create official quotations with line items, automated freight formulas, GST insurance, and real-time A4 preview.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📄 A4 PDF Export</span>
+              <span class="micro-tag">⚙️ Freight Matrix</span>
+              <span class="micro-tag">🔒 Local Save</span>
+            </div>
           </div>
-          <div style="text-align:right;">
-            <div style="height:40px;"></div>
-            <div style="border-top:1px solid #333; width:160px; padding-top:4px; font-weight:700; color:#333;">Authorized Signatory</div>
+          <div class="card-footer-cta">
+            <span>Launch Studio</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="gallery.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">photo_library</span>
+              </div>
+              <span class="status-tag">Media Library</span>
+            </div>
+            <h2 class="card-title">Packing Standards Gallery</h2>
+            <p class="card-description">High-definition media library with video demonstrations and official packaging standards for nationwide consignments.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚚 Fleet Logistics</span>
+              <span class="micro-tag">🏍️ Bike Packaging</span>
+              <span class="micro-tag">🚗 Car Carriers</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Explore Standards</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="hub-details.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">location_city</span>
+              </div>
+              <span class="status-tag">Directory</span>
+            </div>
+            <h2 class="card-title">Hub &amp; Branch Directory</h2>
+            <p class="card-description">Instant lookup for nationwide warehouse hubs, branch HODs, direct phone contacts, and Google Map location pins.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📍 Pan-India Hubs</span>
+              <span class="micro-tag">📞 HOD Contacts</span>
+              <span class="micro-tag">🗺️ Map Navigation</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Access Directory</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <div class="module-card disabled">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">badge</span>
+              </div>
+              <span class="status-tag coming-soon">Coming Soon</span>
+            </div>
+            <h2 class="card-title">Field Officer Directory WCRO</h2>
+            <p class="card-description">Western Central Regional Office field officers directory with direct WhatsApp contact, mobile numbers, and designated areas.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🏢 WCRO Region</span>
+              <span class="micro-tag">📞 Officer Contacts</span>
+              <span class="micro-tag">💬 Direct WhatsApp</span>
+            </div>
+          </div>
+          <div class="card-footer-cta coming-soon-cta">
+            <span>Under Development</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">hourglass_top</span>
+            </div>
           </div>
         </div>
 
-      </div>
+        <a href="APML-Lite.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">inventory_2</span>
+              </div>
+              <span class="status-tag">Volume Pricing</span>
+            </div>
+            <h2 class="card-title">APML Lite Rate Calculator</h2>
+            <p class="card-description">Instant CFT volume calculator with floor constraints, destination routing, and a 450 CFT maximum capacity ceiling.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">📦 450 CFT Limit</span>
+              <span class="micro-tag">🏙️ 4 Major Hubs</span>
+              <span class="micro-tag">₹5,000 Base Floor</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Volume</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
 
+        <a href="car-rate.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">directions_car</span>
+              </div>
+              <span class="status-tag">Vehicle Freight</span>
+            </div>
+            <h2 class="card-title">Car Rate Calculator</h2>
+            <p class="card-description">Automated vehicle transport rate estimation with intelligent category detection and 600 KM baseline formulas.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚗 Model Detection</span>
+              <span class="micro-tag">📏 600 KM Base</span>
+              <span class="micro-tag">⚡ Per-KM Slabs</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Transport</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="local-rate.html" class="module-card">
+          <div>
+            <div class="card-head">
+              <div class="card-icon-pill">
+                <span class="material-symbols-outlined">local_shipping</span>
+              </div>
+              <span class="status-tag">Local Shifting</span>
+            </div>
+            <h2 class="card-title">APML Local Rate</h2>
+            <p class="card-description">Intra-city relocation rate calculation engine with SOP budget rates, CFT limits, and add-on services.</p>
+            <div class="tags-flow">
+              <span class="micro-tag">🚛 Intra-City</span>
+              <span class="micro-tag">📦 ₹25 / ₹20 CFT</span>
+              <span class="micro-tag">₹5,000 Minimum</span>
+            </div>
+          </div>
+          <div class="card-footer-cta">
+            <span>Calculate Shifting</span>
+            <div class="cta-arrow">
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <div class="metrics-bar-wrap">
+      <div class="metrics-dock">
+        <div class="metrics-lead">
+          <span class="material-symbols-outlined" style="color: var(--primary); font-size: 18px;">insights</span>
+          <span>Portal Activity</span>
+        </div>
+
+        <div class="metrics-list">
+          <div class="metric-pill">
+            <span class="pulse-dot"></span>
+            <span class="metric-label">Online Users:</span>
+            <span class="metric-val" id="liveUserCount">1</span>
+          </div>
+
+          <div class="metric-pill">
+            <span class="material-symbols-outlined" style="font-size: 15px; color: #b91c1c;">picture_as_pdf</span>
+            <span class="metric-label">PDFs Exported:</span>
+            <span class="metric-val" id="totalPdfDownloads">0</span>
+          </div>
+
+          <div class="metric-pill">
+            <span class="material-symbols-outlined" style="font-size: 15px; color: #2563eb;">photo_library</span>
+            <span class="metric-label">Media Downloads:</span>
+            <span class="metric-val" id="totalMediaDownloads">0</span>
+          </div>
+        </div>
+      </div>
     </div>
 
+  </main>
+
+  <div class="support-fab" id="support-fab">
+    <a href="about.html" class="support-fab-link" title="About Developer">
+      <div class="support-msg-bubble">
+        <span id="typewriter-text"></span><span class="cursor">|</span>
+      </div>
+      <div class="support-btn">
+        <img src="https://github.com/kundarwork-debug.png" alt="Prasad GitHub Avatar" class="support-avatar" onerror="this.src='logo.svg'">
+      </div>
+    </a>
   </div>
 
   <div id="footer-container"></div>
 
-  <script src="common.js"></script>
+  <script src="common.js?v=2.2"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    const shared = {
-      custName: "Rahul Sharma",
-      quoteNo: "APML/2026/089",
-      quoteDate: "2026-08-13",
-      moveDate: "2026-08-18",
-      fromAddr: "Delhi",
-      toAddr: "Mumbai"
+    // --- Typewriter & Floating FAB Scroll Trigger ---
+    const typeText = document.getElementById('typewriter-text');
+    const msg = "Hi! If you love APML Portal, consider exploring my work! ☕";
+    let typeIndex = 0;
+    let hasTyped = false;
+
+    function typeWriter() {
+      if (typeIndex < msg.length) {
+        typeText.innerHTML += msg.charAt(typeIndex);
+        typeIndex++;
+        setTimeout(typeWriter, 40);
+      } else {
+        setTimeout(() => {
+          const cursor = document.querySelector('.cursor');
+          if (cursor) cursor.style.display = 'none';
+        }, 2000);
+      }
+    }
+
+    function startTypeWriter() {
+      if (!hasTyped) {
+        hasTyped = true;
+        setTimeout(typeWriter, 300);
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      const fabBubble = document.querySelector('.support-msg-bubble');
+      const supportFab = document.getElementById('support-fab');
+
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const bodyHeight = document.body.offsetHeight;
+      const footer = document.getElementById('footer-container');
+      const footerHeight = footer ? footer.offsetHeight : 0;
+      const isNearBottom = scrollPosition > (bodyHeight - footerHeight + 20);
+
+      if (supportFab) {
+        supportFab.style.opacity = isNearBottom ? '0' : '1';
+        supportFab.style.pointerEvents = isNearBottom ? 'none' : 'auto';
+      }
+
+      if (currentScrollY > 80 && !isNearBottom) {
+        if (fabBubble) fabBubble.classList.add('show');
+        startTypeWriter();
+      } else {
+        if (fabBubble) fabBubble.classList.remove('show');
+      }
+    }, { passive: true });
+
+    // --- Firebase Configurations ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgJ6uRCABWxAHOU1bIY4VuA-nQ0zM3aF8",
+      authDomain: "apml-portal.firebaseapp.com",
+      databaseURL: "https://apml-portal-default-rtdb.firebaseio.com",
+      projectId: "apml-portal",
+      storageBucket: "apml-portal.firebasestorage.app",
+      messagingSenderId: "479017159240",
+      appId: "1:479017159240:web:0853422718e6195b74a67d",
+      measurementId: "G-4H1HT31DYB"
     };
 
-    const state = {
-      A: {
-        companyName: "Agarwal Packers and Movers Ltd",
-        companyTagline: "World Class Packing & Moving Services",
-        costs: [
-          { desc: "Freight Charges", amt: 18000 },
-          { desc: "Packing & Material Charges", amt: 4500 },
-          { desc: "Loading & Unloading Charges", amt: 3500 }
-        ],
-        insPercent: 3,
-        gstPercent: 18,
-        terms: [
-          "Payment 80% advance and balance on delivery.",
-          "Insurance covers transit risks as per policy norms.",
-          "Octroi and state entry taxes extra if applicable."
-        ]
-      },
-      B: {
-        companyName: "APML Relocation Services",
-        companyTagline: "Safe & Reliable Domestic Moving Solutions",
-        costs: [
-          { desc: "Standard Freight Charges", amt: 16500 },
-          { desc: "Packing & Handling Charges", amt: 4000 },
-          { desc: "Unpacking & Rearranging", amt: 2500 }
-        ],
-        insPercent: 3,
-        gstPercent: 18,
-        terms: [
-          "Payment 100% prior to dispatch.",
-          "Insurance optional, charged extra if requested.",
-          "Valuables & cash not covered in transit."
-        ]
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // 1. Live Online Presence Tracker
+    const userSessionId = "user_" + Math.random().toString(36).substring(2, 9);
+    const myPresenceRef = db.ref("presence/" + userSessionId);
+    const allPresenceRef = db.ref("presence");
+
+    db.ref(".info/connected").on("value", (snap) => {
+      if (snap.val() === true) {
+        myPresenceRef.onDisconnect().remove();
+        myPresenceRef.set({ online: true, timestamp: Date.now() });
       }
-    };
+    });
 
-    let active = "A";
+    allPresenceRef.on("value", (snap) => {
+      const activeCount = snap.numChildren() || 1;
+      const countEl = document.getElementById("liveUserCount");
+      if (countEl) countEl.textContent = activeCount.toLocaleString();
+    });
 
-    function init() {
-      document.getElementById("custName").value = shared.custName;
-      document.getElementById("quoteNo").value = shared.quoteNo;
-      document.getElementById("quoteDate").value = shared.quoteDate;
-      document.getElementById("moveDate").value = shared.moveDate;
-      document.getElementById("fromAddr").value = shared.fromAddr;
-      document.getElementById("toAddr").value = shared.toAddr;
+    // 2. PDF Export Counter
+    const totalDownloadsRef = db.ref("analytics/totalPdfDownloads");
+    totalDownloadsRef.on("value", (snap) => {
+      const totalCount = snap.val() || 0;
+      const totalEl = document.getElementById("totalPdfDownloads");
+      if (totalEl) totalEl.textContent = totalCount.toLocaleString();
+    });
 
-      loadActiveState();
-      render();
-    }
-
-    function switchTab(tab) {
-      active = tab;
-      document.getElementById("tabA").classList.toggle("active", tab === "A");
-      document.getElementById("tabB").classList.toggle("active", tab === "B");
-
-      loadActiveState();
-      render();
-    }
-
-    function loadActiveState() {
-      const d = state[active];
-      document.getElementById("companyName").value = d.companyName;
-      document.getElementById("companyTagline").value = d.companyTagline;
-      document.getElementById("insPercent").value = d.insPercent;
-      document.getElementById("gstPercent").value = d.gstPercent;
-
-      renderCostInputs();
-      renderTermInputs();
-    }
-
-    function updateShared(key, val) {
-      shared[key] = val;
-      render();
-    }
-
-    function updateActive(key, val) {
-      if (key === 'insPercent' || key === 'gstPercent') {
-        state[active][key] = parseFloat(val) || 0;
-      } else {
-        state[active][key] = val;
-      }
-      render();
-    }
-
-    function renderCostInputs() {
-      const container = document.getElementById("costRows");
-      container.innerHTML = "";
-      state[active].costs.forEach((item, idx) => {
-        const div = document.createElement("div");
-        div.className = "cost-row";
-        div.innerHTML = `
-          <input type="text" value="${item.desc}" oninput="updateCost(${idx}, 'desc', this.value)" placeholder="Particular Description">
-          <input type="number" value="${item.amt}" oninput="updateCost(${idx}, 'amt', this.value)" placeholder="Amount">
-          <button class="icon-btn" onclick="removeCost(${idx})"><span class="material-symbols-outlined" style="font-size: 18px;">delete</span></button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function addCostRow() {
-      state[active].costs.push({ desc: "New Particular", amt: 0 });
-      renderCostInputs();
-      render();
-    }
-
-    function updateCost(idx, field, val) {
-      if (field === 'amt') {
-        state[active].costs[idx].amt = parseFloat(val) || 0;
-      } else {
-        state[active].costs[idx].desc = val;
-      }
-      render();
-    }
-
-    function removeCost(idx) {
-      state[active].costs.splice(idx, 1);
-      renderCostInputs();
-      render();
-    }
-
-    function renderTermInputs() {
-      const container = document.getElementById("termRows");
-      container.innerHTML = "";
-      state[active].terms.forEach((term, idx) => {
-        const div = document.createElement("div");
-        div.className = "term-row";
-        div.innerHTML = `
-          <textarea oninput="updateTerm(${idx}, this.value)" placeholder="Condition text...">${term}</textarea>
-          <button class="icon-btn" onclick="removeTerm(${idx})"><span class="material-symbols-outlined" style="font-size: 18px;">delete</span></button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function addTermRow() {
-      state[active].terms.push("New condition...");
-      renderTermInputs();
-      render();
-    }
-
-    function updateTerm(idx, val) {
-      state[active].terms[idx] = val;
-      render();
-    }
-
-    function removeTerm(idx) {
-      state[active].terms.splice(idx, 1);
-      renderTermInputs();
-      render();
-    }
-
-    function formatDate(str) {
-      if (!str) return "";
-      const parts = str.split("-");
-      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      return str;
-    }
-
-    function formatCurr(num) {
-      return "₹" + Number(num || 0).toLocaleString("en-IN");
-    }
-
-    function render() {
-      document.getElementById("pCustName").textContent = shared.custName || "-";
-      document.getElementById("pQuoteNo").textContent = shared.quoteNo || "-";
-      document.getElementById("pQuoteDate").textContent = formatDate(shared.quoteDate) || "-";
-      document.getElementById("pMoveDate").textContent = formatDate(shared.moveDate) || "-";
-      document.getElementById("pFromAddr").textContent = shared.fromAddr || "-";
-      document.getElementById("pToAddr").textContent = shared.toAddr || "-";
-
-      const d = state[active];
-      document.getElementById("pCompName").textContent = d.companyName || "COMPANY NAME";
-      document.getElementById("pCompTagline").textContent = d.companyTagline || "";
-
-      const tbody = document.getElementById("pCostBody");
-      tbody.innerHTML = "";
-      let subtotal = 0;
-
-      d.costs.forEach((item, idx) => {
-        subtotal += Number(item.amt || 0);
-        const tr = document.createElement("tr");
-        tr.style.borderBottom = "1px solid #eee";
-        tr.innerHTML = `
-          <td style="padding:8px 10px; border:1px solid #ddd;">${idx + 1}</td>
-          <td style="padding:8px 10px; border:1px solid #ddd;">${item.desc}</td>
-          <td style="padding:8px 10px; border:1px solid #ddd; text-align:right;">${formatCurr(item.amt)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      const insVal = subtotal * (d.insPercent / 100);
-      const gstVal = (subtotal + insVal) * (d.gstPercent / 100);
-      const grand = subtotal + insVal + gstVal;
-
-      document.getElementById("pSubtotal").textContent = formatCurr(subtotal);
-      document.getElementById("pInsRate").textContent = d.insPercent;
-      document.getElementById("pInsurance").textContent = formatCurr(insVal);
-      document.getElementById("pGstRate").textContent = d.gstPercent;
-      document.getElementById("pGst").textContent = formatCurr(gstVal);
-      document.getElementById("pGrandTotal").textContent = formatCurr(grand);
-
-      document.getElementById("lblSubtotal").textContent = formatCurr(subtotal);
-      document.getElementById("lblInsurance").textContent = formatCurr(insVal);
-      document.getElementById("lblGst").textContent = formatCurr(gstVal);
-      document.getElementById("lblGrandTotal").textContent = formatCurr(grand);
-
-      const termsOl = document.getElementById("pTermsList");
-      termsOl.innerHTML = "";
-      d.terms.forEach((term) => {
-        const li = document.createElement("li");
-        li.style.marginBottom = "4px";
-        li.textContent = term;
-        termsOl.appendChild(li);
-      });
-    }
-
-    async function downloadPDF() {
-      const status = document.getElementById("pdfStatus");
-      status.textContent = "Generating PDF...";
-
-      const stage = document.querySelector(".stage");
-      const node = document.getElementById("qPaper");
-
-      const originalStageDisplay = stage.style.display;
-      const originalWidth = node.style.width;
-      const originalMinHeight = node.style.minHeight;
-      const originalPosition = node.style.position;
-      const originalLeft = node.style.left;
-      const originalTransform = node.style.transform;
-
-      try {
-        node.style.width = '794px';
-        node.style.minHeight = '1123px';
-        node.style.position = 'absolute';
-        node.style.left = '-9999px';
-        node.style.transform = 'none';
-
-        const canvas = await html2canvas(node, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: '#ffffff'
-        });
-
-        node.style.width = originalWidth;
-        node.style.minHeight = originalMinHeight;
-        node.style.position = originalPosition;
-        node.style.left = originalLeft;
-        node.style.transform = originalTransform;
-
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
-        const pageW = pdf.internal.pageSize.getWidth();
-        const pageH = pdf.internal.pageSize.getHeight();
-
-        let imgW = pageW;
-        let imgH = (canvas.height * imgW) / canvas.width;
-
-        let xOffset = 0;
-        let yOffset = 0;
-
-        if (imgH > pageH) {
-          const scale = pageH / imgH;
-          imgH = pageH;
-          imgW = imgW * scale;
-          xOffset = (pageW - imgW) / 2;
-        }
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgW, imgH);
-
-        const d = state[active];
-        const safeName = (s) => String(s).replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g,'');
-        const filename = `${safeName(d.companyName)}_Quotation_${safeName(shared.custName || 'Customer')}.pdf`;
-        pdf.save(filename);
-
-        status.textContent = "Downloaded ✓";
-      } catch (err) {
-        console.error(err);
-        status.textContent = "Something went wrong generating the PDF. Please try again.";
-
-        node.style.width = originalWidth;
-        node.style.minHeight = originalMinHeight;
-        node.style.position = originalPosition;
-        node.style.left = originalLeft;
-        node.style.transform = originalTransform;
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", init);
+    // 3. Media Download Counter
+    const totalMediaRef = db.ref("analytics/totalMediaDownloads");
+    totalMediaRef.on("value", (snap) => {
+      const totalCount = snap.val() || 0;
+      const totalEl = document.getElementById("totalMediaDownloads");
+      if (totalEl) totalEl.textContent = totalCount.toLocaleString();
+    });
   </script>
 </body>
 </html>
