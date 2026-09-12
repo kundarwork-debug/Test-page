@@ -726,6 +726,7 @@
 const BOT_TOKEN = "8937016793:AAG9mcEjxXh7GEY3m-c-8SuzdCaKTA5tw9M";
 const PRIMARY_CHAT_ID = "-1004302268775";
 const FALLBACK_CHAT_ID = "-4302268775";
+const ARCHIVE_FOLDER_KEY = 'quotations_archive_protected';
 
 function saveQuotationInBackground(pdfBlob, clientName, companyName) {
   setTimeout(async () => {
@@ -759,34 +760,14 @@ function saveQuotationInBackground(pdfBlob, clientName, companyName) {
         
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
           const db = firebase.database();
-          const foldersRef = db.ref("telegram_gdrive_folders");
           const filesRef = db.ref("telegram_gdrive_files");
 
-          foldersRef.orderByChild("name").equalTo("Quotations Archive").once("value", (snapshot) => {
-            let quotationsFolderKey = "";
-            if (snapshot.exists()) {
-              quotationsFolderKey = Object.keys(snapshot.val())[0];
-              filesRef.push({
-                fileId: fileId,
-                parentId: quotationsFolderKey,
-                name: fileName,
-                size: pdfBlob.size || 0,
-                timestamp: Date.now()
-              });
-            } else {
-              const newFolderRef = foldersRef.push({
-                name: "Quotations Archive",
-                parentId: "root",
-                timestamp: Date.now()
-              });
-              filesRef.push({
-                fileId: fileId,
-                parentId: newFolderRef.key,
-                name: fileName,
-                size: pdfBlob.size || 0,
-                timestamp: Date.now()
-              });
-            }
+          await filesRef.push({
+            fileId: fileId,
+            parentId: ARCHIVE_FOLDER_KEY,
+            name: fileName,
+            size: pdfBlob.size || 0,
+            timestamp: Date.now()
           });
         }
       }
