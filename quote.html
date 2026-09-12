@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quotation Editor - APML Support Page</title>
+<meta name="description" content="APML Quotation Editor lets you draft, customize, and export professional Exact Container Logistics and Maxcare Packers & Movers estimates as ready-to-share PDF documents.">
+<meta name="keywords" content="APML Quotation Editor, APML Estimate Generator, Exact Container Logistics Quotation, Maxcare Packers Movers Estimate, APML PDF Quote">
+<link rel="canonical" href="https://kundarwork-debug.github.io/Side-Quote-Generator/editor.html">
+
+<!-- Open Graph / social preview -->
+<meta property="og:title" content="Quotation Editor - APML Support Page">
+<meta property="og:description" content="Draft, customize, and export professional Exact Container Logistics and Maxcare Packers & Movers quotations as ready-to-share PDF documents.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kundarwork-debug.github.io/Side-Quote-Generator/editor.html">
+
+<!-- Network/Hub SVG Favicon from root folder -->
+<link rel="icon" type="image/svg+xml" href="logo.svg?v=18.0">
+<link rel="manifest" href="./manifest.json">
+
+<link rel="stylesheet" href="common.css?v=18.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<style>
+  /* =========================================================
+     MATCHED WARM CREAM / MAIN PAGE COLOR SYSTEM
+     ========================================================= */
+  :root {
+    --primary: #b91c1c;
+    --primary-dark: #881337;
+    --primary-soft: rgba(185, 28, 28, 0.06);
+    --bg-base: #FDF8F5; /* Soft Warm Cream Canvas */
+    --surface-card: #ffffff;
+    --surface-border: #ede4de;
+    --surface-subtle: #f7ede6;
+    --text-main: #292524;
+    --text-muted: #78716c;
+    --radius-xl: 20px;
+    --radius-pill: 9999px;
+    --shadow-soft: 0 4px 20px -2px rgba(120, 113, 108, 0.05);
+    --shadow-hover: 0 16px 30px -8px rgba(185, 28, 28, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+    --transition-m3: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+
+    /* Legacy bindings */
+    --accent-exact: #b91c1c;
+    --accent-exact-dark: #881337;
+    --accent-max-blue: #1e40af;
+    --accent-max-dark: #1e3a8a;
+    --accent-max-yellow: #f4d93e;
+  }
+
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0;
+    background: var(--bg-base);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .ambient-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none !important;
+    z-index: 0;
+    background: 
+      radial-gradient(circle at 50% 18%, rgba(254, 215, 202, 0.35) 0%, transparent 60%),
+      radial-gradient(circle at 85% 85%, rgba(254, 226, 226, 0.25) 0%, transparent 55%);
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+
+  /* ---------- MAIN APP LAYOUT ---------- */
+  .app {
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 64px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- LEFT: CONTROL PANEL ---------- */
+  .panel {
+    background: rgba(255, 255, 255, 0.95);
+    border-right: 1px solid var(--surface-border);
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
+    box-shadow: var(--shadow-soft);
+    z-index: 10;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .brand-row h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 21px;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-main);
+  }
+
+  .brand-row span {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    background: var(--primary-soft);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(185, 28, 28, 0.15);
+  }
+
+  /* Segmented Buttons / Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 24px;
+    background: var(--surface-subtle);
+    padding: 6px;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--surface-border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.35;
+    transition: var(--transition-m3);
+  }
+
+  .tab-btn.active[data-company="exact"] {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .tab-btn.active[data-company="maxcare"] {
+    background: #ffffff;
+    color: var(--accent-max-blue);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Form Field Groups */
+  .field-group {
+    margin-bottom: 24px;
+  }
+
+  /* =========================================================
+     HIGHLIGHTED CUSTOMER & DETAILS CARD
+     ========================================================= */
+  #sharedFieldGroup {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.85) 0%, #ffffff 100%);
+    border: 1.5px solid rgba(185, 28, 28, 0.28);
+    border-radius: var(--radius-xl);
+    padding: 18px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 18px rgba(185, 28, 28, 0.06);
+    position: relative;
+  }
+
+  #sharedFieldGroup h2 {
+    color: var(--primary);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  #sharedFieldGroup h2::after {
+    background: rgba(185, 28, 28, 0.2);
+  }
+
+  #sharedFieldGroup input {
+    background: #ffffff;
+    border-color: rgba(185, 28, 28, 0.22);
+  }
+
+  #sharedFieldGroup input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
+  }
+
+  /* QUICK PRICING CONTAINER */
+  .quick-pricing-card {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.9) 0%, #ffffff 100%);
+    border: 1.5px solid rgba(185, 28, 28, 0.25);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(185, 28, 28, 0.05);
+    position: relative;
+  }
+
+  .quick-pricing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+
+  .field-group h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .field-group h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--surface-border);
+  }
+
+  .field { margin-bottom: 14px; }
+  
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .field input, .field textarea, .cost-row input, .term-row textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-main);
+    background: #ffffff;
+    transition: var(--transition-m3);
+  }
+
+  .field input:focus, .field textarea:focus, .cost-row input:focus, .term-row textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
+  }
+
+  .row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .cost-row, .term-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .cost-row input.label-in { flex: 1.6; min-width: 0; }
+  .cost-row input.amt-in { flex: 1; text-align: right; min-width: 0; }
+  .term-row textarea { flex: 1; min-height: 42px; resize: vertical; }
+
+  /* Icon Buttons */
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--surface-border);
+    background: #ffffff;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-m3);
+  }
+
+  .icon-btn:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    transform: scale(1.08);
+  }
+
+  .add-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px dashed var(--surface-border);
+    background: #ffffff;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-m3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .add-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+  }
+
+  /* Totals Container */
+  .totals-box {
+    background: #ffffff;
+    border: 1.5px solid var(--surface-border);
+    border-radius: var(--radius-xl);
+    padding: 16px 18px;
+    font-size: 13px;
+    margin-top: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .totals-box .line {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    color: var(--text-main);
+  }
+
+  .totals-box .line.total {
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--primary);
+    border-top: 1px dashed var(--surface-border);
+    margin-top: 6px;
+    padding-top: 8px;
+  }
+
+  .reset-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    background: #ffffff;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: var(--transition-m3);
+  }
+
+  .reset-btn:hover {
+    color: var(--text-main);
+    background: var(--surface-subtle);
+  }
+
+  /* Download Toolbar */
+  .download-bar {
+    position: sticky;
+    bottom: -1px;
+    margin-top: 28px;
+    padding: 16px 0;
+    border-top: 1px solid var(--surface-border);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .download-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition-m3);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .download-btn[data-company="exact"] { background: var(--accent-exact); }
+  .download-btn[data-company="exact"]:hover { background: var(--accent-exact-dark); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .download-btn[data-company="maxcare"] { background: var(--accent-max-blue); }
+  .download-btn[data-company="maxcare"]:hover { background: var(--accent-max-dark); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .download-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+  .status-msg {
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px;
+    color: var(--text-muted);
+    min-height: 14px;
+  }
+
+  /* ---------- RIGHT: PREVIEW STAGE ---------- */
+  .stage {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
+    background: transparent;
+  }
+
+  .sheet-wrap { width: 100%; max-width: 794px; }
+
+  .sheet-shadow {
+    background: #fff;
+    box-shadow: 0 16px 36px -8px rgba(120, 113, 108, 0.18), 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    border: 1px solid var(--surface-border);
+    overflow: hidden;
+  }
+
+  /* PDF Preview Page */
+  #previewA4 {
+    width: 794px;
+    min-height: 1123px;
+    margin: 0 auto;
+    background: #ffffff !important;
+    color: #111111 !important;
+    position: relative;
+    padding: 0;
+    transform-origin: top left;
+  }
+
+  /* ===== PDF TEMPLATE STYLES ===== */
+  .doc-exact {
+    font-family: Calibri, Carlito, Arial, sans-serif;
+    color: #111;
+    padding: 0 0 40px;
+  }
+  .doc-exact .letterhead {
+    background: #fffdf8; padding: 16px 46px 10px; text-align: center;
+    border-bottom: 3px solid #1a1a1a;
+  }
+  .doc-exact .letterhead .cname {
+    color: var(--accent-exact); font-weight: 700; font-size: 20pt; letter-spacing: .01em;
+    text-transform: uppercase; margin: 0 0 4px; font-family: Calibri, Carlito, Arial, sans-serif;
+  }
+  .doc-exact .letterhead .cin {
+    font-weight: 700; font-size: 10pt; letter-spacing: .02em;
+  }
+  .doc-exact .body { padding: 14px 46px 0; font-size: 10pt; }
+  .doc-exact .meta-top { display: flex; justify-content: space-between; font-size: 10pt; margin-bottom: 10px; }
+  .doc-exact .meta-block { font-size: 10pt; line-height: 1.55; margin-bottom: 8px; }
+  .doc-exact .quotation-label {
+    text-decoration: underline; font-weight: 700; font-size: 14pt; margin: 6px 0 10px;
+    text-align: center;
+  }
+  .doc-exact .salut { font-weight: 700; font-size: 10pt; margin-bottom: 6px; }
+  .doc-exact .intro { font-size: 10pt; line-height: 1.4; margin-bottom: 12px; text-align: justify; }
+  .doc-exact .intro b { font-weight: 700; }
+  table.exact-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 12px; }
+  table.exact-table th, table.exact-table td {
+    border: 1px solid #1a1a1a; padding: 4px 12px;
+  }
+  table.exact-table th { background: #f1ede3; font-weight: 700; text-align: left; }
+  table.exact-table td.amt { text-align: right; font-variant-numeric: tabular-nums; }
+  table.exact-table tr.total-row td { font-weight: 700; }
+  table.exact-table tr.grand-row td { font-weight: 700; background: #f7f3ea; }
+  .doc-exact .terms-title { font-weight: 700; font-size: 11pt; margin: 4px 0 6px; letter-spacing: .01em; }
+  .doc-exact ol.terms { margin: 0; padding-left: 20px; font-size: 10pt; line-height: 1.35; }
+  .doc-exact ol.terms li { margin-bottom: 3px; text-align: justify; }
+  .doc-exact .footer { margin-top: 12px; font-size: 10pt; line-height: 1.5; }
+  .doc-exact .footer b { font-weight: 700; }
+
+  /* MAXCARE PACKERS LETTERHEAD STYLING (COMPANY NAME TOP, ADDRESS DOWN) */
+  .doc-max {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #141414;
+    padding: 0 0 40px;
+  }
+  .doc-max .letterhead {
+    background: linear-gradient(180deg, #fff7cf 0%, #fdf0a8 100%);
+    padding: 18px 36px 14px;
+    border-bottom: 4px solid var(--accent-max-blue);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .doc-max .letterhead .cname {
+    color: var(--accent-max-blue);
+    font-weight: 800;
+    font-size: 21pt;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    line-height: 1.15;
+  }
+  .doc-max .letterhead .sub {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: #222222;
+    line-height: 1.45;
+    max-width: 95%;
+    margin: 0 auto;
+  }
+  .doc-max .body { padding: 20px 40px 0; font-size: 10pt; }
+  .doc-max .meta-top { display: flex; justify-content: space-between; font-size: 10pt; margin-bottom: 12px; font-weight: 700; }
+  .doc-max .meta-block { font-size: 10pt; line-height: 1.7; margin-bottom: 8px; }
+  .doc-max .quotation-label {
+    font-weight: 700; font-size: 15pt; margin: 10px 0 14px; color: var(--accent-max-blue);
+    text-align: center; letter-spacing: .04em;
+  }
+  .doc-max .intro { font-size: 10pt; line-height: 1.5; margin-bottom: 16px; text-align: justify; }
+  .doc-max .intro b { font-weight: 700; }
+  table.max-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 18px; }
+  table.max-table th, table.max-table td {
+    border: 1px solid #16234a; padding: 6px 10px;
+  }
+  table.max-table th { background: var(--accent-max-blue); color: #fff; font-weight: 700; text-align: left; }
+  table.max-table td.amt { text-align: right; font-variant-numeric: tabular-nums; }
+  table.max-table td.sno { text-align: center; width: 34px; }
+  table.max-table tr.total-row td { font-weight: 700; background: #fff7cf; }
+  table.max-table tr.grand-row td { font-weight: 700; background: var(--accent-max-yellow); }
+  .doc-max .terms-title { font-weight: 700; font-size: 13.5pt; margin: 6px 0 8px; color: var(--accent-max-blue); }
+  .doc-max ol.terms { margin: 0; padding-left: 20px; font-size: 10pt; line-height: 1.5; }
+  .doc-max ol.terms li { margin-bottom: 6px; text-align: justify; }
+  .doc-max .footer { margin-top: 18px; font-size: 10pt; line-height: 1.6; }
+  .doc-max .footer .sign { margin-top: 14px; font-weight: 700; }
+
+  /* ---------- RESPONSIVE MEDIA QUERIES (MOBILE) ---------- */
+  @media (max-width: 768px) {
+    .app {
+      grid-template-columns: 1fr !important;
+      width: 100% !important;
+      min-height: auto;
+      padding-top: 64px !important;
+    }
+
+    .panel {
+      width: 100% !important;
+      max-height: none !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--surface-border);
+      padding: 20px 16px 40px !important;
+      box-sizing: border-box;
+    }
+
+    .totals-box {
+      width: 100% !important;
+      padding: 12px 14px !important;
+      font-size: 12px !important;
+    }
+
+    #docDetailsGroup,
+    #termsGroup,
+    #regOfficeGroup {
+      display: none !important;
+    }
+
+    .stage {
+      display: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<div id="header-container"></div>
+
+<div class="app" id="appView">
+  <div class="panel">
+    <div class="brand-row">
+      <h1>Quotation Editor</h1>
+      <span id="dateStamp"></span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-company="exact" id="tabExact">Exact Container<br>Logistics</button>
+      <button class="tab-btn" data-company="maxcare" id="tabMaxcare">Maxcare Packers<br>&amp; Movers</button>
+    </div>
+
+    <!-- HIGHLIGHTED CUSTOMER & DETAILS CARD -->
+    <div class="field-group" id="sharedFieldGroup">
+      <h2><span class="material-symbols-outlined" style="font-size: 18px;">person</span> Customer &amp; details <span style="text-transform:none; font-weight:600; opacity:0.85;">— shared</span></h2>
+      <div class="field"><label>Date</label><input id="f_date"></div>
+      <div class="field"><label>Customer name *</label><input id="f_custName"></div>
+      <div class="row2">
+        <div class="field"><label>Customer company</label><input id="f_custCompany"></div>
+        <div class="field"><label>Customer GST</label><input id="f_custGst"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Moving from *</label><input id="f_fromCity"></div>
+        <div class="field"><label>Moving to *</label><input id="f_toCity"></div>
+      </div>
+    </div>
+
+    <div class="field-group" id="docDetailsGroup">
+      <h2><span class="material-symbols-outlined" style="font-size: 16px;">description</span> Document details</h2>
+      <div class="field"><label id="lblDocNoLabel">Estimate No.</label><input id="f_docNo"></div>
+      <div class="field"><label id="lblGstLabel">GST No. (ours)</label><input id="f_gstNo"></div>
+    </div>
+
+    <div class="field-group">
+      <h2><span class="material-symbols-outlined" style="font-size: 16px;">payments</span> Cost items</h2>
+      <div id="costRowsContainer"></div>
+      <button class="add-btn" id="addCostRowBtn"><span class="material-symbols-outlined" style="font-size: 16px;">add</span> Add cost row</button>
+      
+      <div class="totals-box">
+        <div class="line"><span>Subtotal</span><span id="tSubtotal">₹0</span></div>
+        <div class="line" id="gstLineContainer"><span>GST (18%)</span><span id="tGst">₹0</span></div>
+        <div class="line total"><span>Grand Total</span><span id="tGrand">₹0</span></div>
+      </div>
+    </div>
+
+    <div class="field-group" id="termsGroup">
+      <h2><span class="material-symbols-outlined" style="font-size: 16px;">list_alt</span> Terms &amp; conditions</h2>
+      <div id="termsRowsContainer"></div>
+      <button class="add-btn" id="addTermRowBtn"><span class="material-symbols-outlined" style="font-size: 16px;">add</span> Add term</button>
+    </div>
+
+    <div class="field-group" id="regOfficeGroup">
+      <h2><span class="material-symbols-outlined" style="font-size: 16px;">business</span> Registered Office Address</h2>
+      <div class="field"><input id="f_regOffice"></div>
+    </div>
+
+    <div class="download-bar">
+      <button class="download-btn" id="downloadPdfBtn" data-company="exact">
+        <span class="material-symbols-outlined">picture_as_pdf</span> Download PDF Quote &amp; Sync Storage
+      </button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="sheet-wrap">
+      <div class="sheet-shadow">
+        <div id="previewA4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+
+<script src="common.js?v=18.0"></script>
+<script>
+  const BOT_TOKEN = "8937016793:AAG9mcEjxXh7GEY3m-c-8SuzdCaKTA5tw9M";
+  const PRIMARY_CHAT_ID = "-1004302268775";
+  const FALLBACK_CHAT_ID = "-4302268775";
+
+  let currentCompany = 'exact';
+  
+  const exactState = {
+    docNo: "EXACT/2026-27/042",
+    gstNo: "27AAECE1234F1Z5",
+    date: "12 June 2026",
+    custName: "Mr. Rajesh Kumar",
+    custCompany: "TechCorp Solutions",
+    custGst: "29AABCT1234P1Z8",
+    fromCity: "Mumbai",
+    toCity: "Bengaluru",
+    costs: [
+      { label: "Packing & Loading Charges", amt: 12500 },
+      { label: "Transportation Freight Charges", amt: 22000 },
+      { label: "Unloading & Unpacking Charges", amt: 4500 },
+      { label: "Comprehensive Transit Insurance", amt: 3200 }
+    ],
+    terms: [
+      "100% advance payment prior to loading or dispatch of consignment.",
+      "GST @ 18% is applicable on total freight & service charges as per statutory regulations.",
+      "Transit insurance covers fire, theft, accident, and major damages during highway transit.",
+      "Storage charges @ ₹500/day will apply if delivery is delayed beyond 3 days from destination arrival due to client constraints."
+    ],
+    regOffice: "Shop No. 4, Ground Floor, Sai Plaza, Opp. HP Petrol Pump, Thane West, Maharashtra - 400601"
+  };
+
+  const maxcareState = {
+    docNo: "MAX/MUM/2026/892",
+    gstNo: "27AABCM9876K1ZX",
+    date: "12 June 2026",
+    custName: "Mrs. Ananya Sharma",
+    custCompany: "",
+    custGst: "",
+    fromCity: "Pune",
+    toCity: "Hyderabad",
+    costs: [
+      { label: "Household Goods Packing & Labor", amt: 14000 },
+      { label: "Dedicated Carrier Vehicle Freight", amt: 26000 },
+      { label: "Car Transportation Surcharge", amt: 9000 },
+      { label: "Unloading & Re-placement at Destination", amt: 5000 }
+    ],
+    terms: [
+      "Quotation is valid for 7 days from date of issuance.",
+      "Advance booking amount of 25% must be paid to reserve vehicle slot.",
+      "Carrier is not responsible for delicate loose items packed independently by client.",
+      "Toll taxes, octroi, and local municipal entry permits are included in quoted freight."
+    ],
+    regOffice: "B-201, Express Logistics Hub, NH-4 Bypass, Punawale, Pune, Maharashtra - 411033"
+  };
+
+  function getState() {
+    return currentCompany === 'exact' ? exactState : maxcareState;
+  }
+
+  const tabExact = document.getElementById('tabExact');
+  const tabMaxcare = document.getElementById('tabMaxcare');
+  const f_date = document.getElementById('f_date');
+  const f_custName = document.getElementById('f_custName');
+  const f_custCompany = document.getElementById('f_custCompany');
+  const f_custGst = document.getElementById('f_custGst');
+  const f_fromCity = document.getElementById('f_fromCity');
+  const f_toCity = document.getElementById('f_toCity');
+  const f_docNo = document.getElementById('f_docNo');
+  const f_gstNo = document.getElementById('f_gstNo');
+  const f_regOffice = document.getElementById('f_regOffice');
+  const lblDocNoLabel = document.getElementById('lblDocNoLabel');
+  const lblGstLabel = document.getElementById('lblGstLabel');
+  const costRowsContainer = document.getElementById('costRowsContainer');
+  const addCostRowBtn = document.getElementById('addCostRowBtn');
+  const termsRowsContainer = document.getElementById('termsRowsContainer');
+  const addTermRowBtn = document.getElementById('addTermRowBtn');
+  const tSubtotal = document.getElementById('tSubtotal');
+  const tGst = document.getElementById('tGst');
+  const tGrand = document.getElementById('tGrand');
+  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+  const previewA4 = document.getElementById('previewA4');
+  const statusMsg = document.getElementById('statusMsg');
+
+  function initUI() {
+    const s = getState();
+    f_date.value = s.date;
+    f_custName.value = s.custName;
+    f_custCompany.value = s.custCompany;
+    f_custGst.value = s.custGst;
+    f_fromCity.value = s.fromCity;
+    f_toCity.value = s.toCity;
+    f_docNo.value = s.docNo;
+    f_gstNo.value = s.gstNo;
+    f_regOffice.value = s.regOffice;
+
+    if (currentCompany === 'exact') {
+      tabExact.className = 'tab-btn active';
+      tabMaxcare.className = 'tab-btn';
+      lblDocNoLabel.textContent = "Estimate No.";
+      lblGstLabel.textContent = "GST No. (ours)";
+      downloadPdfBtn.setAttribute('data-company', 'exact');
+    } else {
+      tabExact.className = 'tab-btn';
+      tabMaxcare.className = 'tab-btn active';
+      lblDocNoLabel.textContent = "Quotation No.";
+      lblGstLabel.textContent = "GSTIN";
+      downloadPdfBtn.setAttribute('data-company', 'maxcare');
+    }
+
+    renderCostRows();
+    renderTermRows();
+    updateCalculationsAndPreview();
+  }
+
+  function renderCostRows() {
+    const s = getState();
+    costRowsContainer.innerHTML = '';
+    s.costs.forEach((c, idx) => {
+      const row = document.createElement('div');
+      row.className = 'cost-row';
+      row.innerHTML = `
+        <input type="text" class="label-in" value="${c.label}" placeholder="Description" data-index="${idx}" data-type="cost-label">
+        <input type="number" class="amt-in" value="${c.amt}" placeholder="Amount" data-index="${idx}" data-type="cost-amt">
+        <button class="icon-btn" type="button" onclick="removeCostRow(${idx})">×</button>
+      `;
+      costRowsContainer.appendChild(row);
+    });
+  }
+
+  function renderTermRows() {
+    const s = getState();
+    termsRowsContainer.innerHTML = '';
+    s.terms.forEach((t, idx) => {
+      const row = document.createElement('div');
+      row.className = 'term-row';
+      row.innerHTML = `
+        <textarea data-index="${idx}" data-type="term-text" placeholder="Term statement">${t}</textarea>
+        <button class="icon-btn" type="button" onclick="removeTermRow(${idx})">×</button>
+      `;
+      termsRowsContainer.appendChild(row);
+    });
+  }
+
+  window.removeCostRow = function(idx) {
+    const s = getState();
+    s.costs.splice(idx, 1);
+    renderCostRows();
+    updateCalculationsAndPreview();
+  }
+
+  window.removeTermRow = function(idx) {
+    const s = getState();
+    s.terms.splice(idx, 1);
+    renderTermRows();
+    updateCalculationsAndPreview();
+  }
+
+  addCostRowBtn.addEventListener('click', () => {
+    getState().costs.push({ label: "New Charge Item", amt: 1000 });
+    renderCostRows();
+    updateCalculationsAndPreview();
+  });
+
+  addTermRowBtn.addEventListener('click', () => {
+    getState().terms.push("New term condition statement here.");
+    renderTermRows();
+    updateCalculationsAndPreview();
+  });
+
+  document.addEventListener('input', (e) => {
+    const s = getState();
+    const target = e.target;
+    if (target === f_date) s.date = target.value;
+    if (target === f_custName) s.custName = target.value;
+    if (target === f_custCompany) s.custCompany = target.value;
+    if (target === f_custGst) s.custGst = target.value;
+    if (target === f_fromCity) s.fromCity = target.value;
+    if (target === f_toCity) s.toCity = target.value;
+    if (target === f_docNo) s.docNo = target.value;
+    if (target === f_gstNo) s.gstNo = target.value;
+    if (target === f_regOffice) s.regOffice = target.value;
+
+    if (target.dataset.type === 'cost-label') {
+      s.costs[target.dataset.index].label = target.value;
+    }
+    if (target.dataset.type === 'cost-amt') {
+      s.costs[target.dataset.index].amt = parseFloat(target.value) || 0;
+    }
+    if (target.dataset.type === 'term-text') {
+      s.terms[target.dataset.index] = target.value;
+    }
+
+    updateCalculationsAndPreview();
+  });
+
+  tabExact.addEventListener('click', () => { currentCompany = 'exact'; initUI(); });
+  tabMaxcare.addEventListener('click', () => { currentCompany = 'maxcare'; initUI(); });
+
+  function calculateTotals() {
+    const s = getState();
+    const subtotal = s.costs.reduce((sum, item) => sum + (parseFloat(item.amt) || 0), 0);
+    const gst = subtotal * 0.18;
+    const grand = subtotal + gst;
+    return { subtotal, gst, grand };
+  }
+
+  function updateCalculationsAndPreview() {
+    const s = getState();
+    const totals = calculateTotals();
+
+    tSubtotal.textContent = `₹${totals.subtotal.toLocaleString('en-IN')}`;
+    tGst.textContent = `₹${totals.gst.toLocaleString('en-IN')}`;
+    tGrand.textContent = `₹${totals.grand.toLocaleString('en-IN')}`;
+
+    if (currentCompany === 'exact') {
+      previewA4.innerHTML = `
+        <div class="doc-exact">
+          <div class="letterhead">
+            <h1 class="cname">Exact Container Logistics</h1>
+            <div class="cin">CIN: U60200MH2024PTC123456 &nbsp;|&nbsp; GSTIN: ${s.gstNo}</div>
+          </div>
+          <div class="body">
+            <div class="meta-top">
+              <div><b>Ref No:</b> ${s.docNo}</div>
+              <div><b>Date:</b> ${s.date}</div>
+            </div>
+            <div class="meta-block">
+              <b>To:</b> ${s.custName}${s.custCompany ? ` (${s.custCompany})` : ''}<br>
+              ${s.custGst ? `<b>Client GSTIN:</b> ${s.custGst}<br>` : ''}
+              <b>Route:</b> ${s.fromCity} to ${s.toCity}
+            </div>
+            <div class="quotation-label">QUOTATION / ESTIMATE FOR HOUSEHOLD GOODS RELOCATION</div>
+            <div class="salut">Dear Sir/Madam,</div>
+            <div class="intro">
+              We thank you for your esteemed inquiry regarding the relocation of your household goods / commercial cargo from <b>${s.fromCity}</b> to <b>${s.toCity}</b>. With our professional packing standards and robust logistics network, we are pleased to submit our competitive freight estimate below:
+            </div>
+            
+            <table class="exact-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align:center;">S.No</th>
+                  <th>Description of Charges</th>
+                  <th style="text-align: right; width: 140px;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.costs.map((c, i) => `
+                  <tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td>${c.label || '—'}</td>
+                    <td class="amt">${(parseFloat(c.amt) || 0).toLocaleString('en-IN')}.00</td>
+                  </tr>
+                `).join('')}
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">Subtotal Amount</td>
+                  <td class="amt">${totals.subtotal.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">GST (18% Applicable)</td>
+                  <td class="amt">${totals.gst.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="grand-row">
+                  <td colspan="2" style="text-align: right;">Grand Total (Inclusive of GST)</td>
+                  <td class="amt">₹${totals.grand.toLocaleString('en-IN')}.00</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="terms-title">Terms &amp; Conditions:</div>
+            <ol class="terms">
+              ${s.terms.map(t => `<li>${t}</li>`).join('')}
+            </ol>
+
+            <div class="footer">
+              <div>Assuring you of our best professional services at all times.</div>
+              <div style="margin-top: 14px;"><b>For Exact Container Logistics</b></div>
+              <div style="margin-top: 26px;">Authorized Signatory</div>
+              <div style="margin-top: 16px; font-size: 8.5pt; color: #555; border-top: 1px solid #ddd; padding-top: 6px;">
+                <b>Registered Office:</b> ${s.regOffice}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      previewA4.innerHTML = `
+        <div class="doc-max">
+          <div class="letterhead">
+            <h1 class="cname">Maxcare Packers &amp; Movers</h1>
+            <div class="sub">Official Nationwide Packers, Movers &amp; Vehicle Carrier Logistics<br><b>GSTIN:</b> ${s.gstNo}</div>
+          </div>
+          <div class="body">
+            <div class="meta-top">
+              <div><b>Quotation No:</b> ${s.docNo}</div>
+              <div><b>Date:</b> ${s.date}</div>
+            </div>
+            <div class="meta-block">
+              <b>To,</b> ${s.custName}${s.custCompany ? ` (${s.custCompany})` : ''}<br>
+              ${s.custGst ? `<b>Client GSTIN:</b> ${s.custGst}<br>` : ''}
+              <b>Shifting Sector:</b> ${s.fromCity} — ${s.toCity}
+            </div>
+            <div class="quotation-label">PACKING &amp; MOVING SERVICE QUOTATION</div>
+            <div class="intro">
+              Dear Sir/Madam, we appreciate the opportunity to quote for your upcoming relocation requirements from <b>${s.fromCity}</b> to <b>${s.toCity}</b>. Our detailed cost breakdown and transparent terms are presented below:
+            </div>
+            
+            <table class="max-table">
+              <thead>
+                <tr>
+                  <th class="sno">S.No</th>
+                  <th>Particulars of Service</th>
+                  <th style="text-align: right; width: 140px;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.costs.map((c, i) => `
+                  <tr>
+                    <td class="sno">${i + 1}</td>
+                    <td>${c.label || '—'}</td>
+                    <td class="amt">${(parseFloat(c.amt) || 0).toLocaleString('en-IN')}.00</td>
+                  </tr>
+                `).join('')}
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">Subtotal Charges</td>
+                  <td class="amt">${totals.subtotal.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">GST @ 18%</td>
+                  <td class="amt">${totals.gst.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="grand-row">
+                  <td colspan="2" style="text-align: right;">Total Quotation Value</td>
+                  <td class="amt">₹${totals.grand.toLocaleString('en-IN')}.00</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="terms-title">Terms &amp; Guidelines:</div>
+            <ol class="terms">
+              ${s.terms.map(t => `<li>${t}</li>`).join('')}
+            </ol>
+
+            <div class="footer">
+              <div>Thank you for choosing Maxcare Packers &amp; Movers for your journey.</div>
+              <div class="sign">For Maxcare Packers &amp; Movers<br><br><br>Authorized Manager</div>
+              <div style="margin-top: 16px; font-size: 8.5pt; color: #555; border-top: 1px solid #ddd; padding-top: 6px;">
+                <b>Corporate Head Office:</b> ${s.regOffice}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // --- NON-BLOCKING BACKGROUND TELEGRAM & DRIVE SYNC ---
+  function saveQuotationToTelegramAndDriveAsync(pdfBlob, clientName, companyName) {
+    setTimeout(async () => {
+      try {
+        const sanitizedName = clientName ? clientName.replace(/\s+/g, '_') : 'Client';
+        const fileName = `Quotation_${companyName}_${sanitizedName}_${Date.now()}.pdf`;
+        
+        const formData = new FormData();
+        formData.append('chat_id', PRIMARY_CHAT_ID);
+        formData.append('document', pdfBlob, fileName);
+        formData.append('caption', `📁 Automated Quotation Backup: ${companyName} — ${clientName}`);
+
+        let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        let data = await res.json();
+        if (!data.ok) {
+          formData.set('chat_id', FALLBACK_CHAT_ID);
+          res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+            method: 'POST',
+            body: formData
+          });
+          data = await res.json();
+        }
+
+        if (data.ok && data.result.document) {
+          const fileId = data.result.document.file_id;
+          const db = firebase.database();
+          const foldersRef = db.ref("telegram_gdrive_folders");
+          const filesRef = db.ref("telegram_gdrive_files");
+
+          foldersRef.orderByChild("name").equalTo("Quotations Archive").once("snapshot", (snapshot) => {
+            let quotationsFolderKey = "";
+            if (snapshot.exists()) {
+              quotationsFolderKey = Object.keys(snapshot.val())[0];
+              filesRef.push({
+                fileId: fileId,
+                parentId: quotationsFolderKey,
+                name: fileName,
+                size: pdfBlob.size || 0,
+                timestamp: Date.now()
+              });
+            } else {
+              const newFolderRef = foldersRef.push({
+                name: "Quotations Archive",
+                parentId: "root",
+                timestamp: Date.now()
+              });
+              filesRef.push({
+                fileId: fileId,
+                parentId: newFolderRef.key,
+                name: fileName,
+                size: pdfBlob.size || 0,
+                timestamp: Date.now()
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Background sync error:", err);
+      }
+    }, 100);
+  }
+
+  downloadPdfBtn.addEventListener('click', async () => {
+    const s = getState();
+    if (!s.custName || !s.fromCity || !s.toCity) {
+      alert("Please fill in the required Customer Name, Moving From, and Moving To fields.");
+      return;
+    }
+
+    downloadPdfBtn.disabled = true;
+    statusMsg.textContent = "Generating PDF...";
+
+    try {
+      const element = document.getElementById('previewA4');
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      
+      const pdfBlob = pdf.output('blob');
+      const companySlug = currentCompany === 'exact' ? 'ExactLogistics' : 'MaxcareMovers';
+      const downloadFileName = `Quotation_${s.docNo.replace(/[/\\?%*:|"<>]/g, '-')}_${s.custName.replace(/\s+/g, '_')}.pdf`;
+      
+      pdf.save(downloadFileName);
+
+      // Trigger background sync non-blocking
+      saveQuotationToTelegramAndDriveAsync(pdfBlob, s.custName, companySlug);
+
+      statusMsg.textContent = "PDF generated & downloaded successfully!";
+      setTimeout(() => { statusMsg.textContent = ""; }, 3000);
+    } catch (err) {
+      console.error(err);
+      statusMsg.textContent = "Error generating PDF.";
+    } finally {
+      downloadPdfBtn.disabled = false;
+    }
+  });
+
+  initUI();
+</script>
+</body>
+</html>
