@@ -594,4 +594,494 @@
     </div>
 
     <div class="download-bar">
-      <button class="downl
+      <button class="download-btn" id="downloadPdfBtn" data-company="exact">
+        <span class="material-symbols-outlined">picture_as_pdf</span> Download PDF Quote &amp; Sync Storage
+      </button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="sheet-wrap">
+      <div class="sheet-shadow">
+        <div id="previewA4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+
+<script src="common.js?v=18.0"></script>
+<script>
+  const BOT_TOKEN = "8937016793:AAG9mcEjxXh7GEY3m-c-8SuzdCaKTA5tw9M";
+  const PRIMARY_CHAT_ID = "-1004302268775";
+  const FALLBACK_CHAT_ID = "-4302268775";
+
+  // State
+  let currentCompany = 'exact';
+  
+  const exactState = {
+    docNo: "EXACT/2026-27/042",
+    gstNo: "27AAECE1234F1Z5",
+    date: "12 June 2026",
+    custName: "Mr. Rajesh Kumar",
+    custCompany: "TechCorp Solutions",
+    custGst: "29AABCT1234P1Z8",
+    fromCity: "Mumbai",
+    toCity: "Bengaluru",
+    costs: [
+      { label: "Packing & Loading Charges", amt: 12500 },
+      { label: "Transportation Freight Charges", amt: 22000 },
+      { label: "Unloading & Unpacking Charges", amt: 4500 },
+      { label: "Comprehensive Transit Insurance", amt: 3200 }
+    ],
+    terms: [
+      "100% advance payment prior to loading or dispatch of consignment.",
+      "GST @ 18% is applicable on total freight & service charges as per statutory regulations.",
+      "Transit insurance covers fire, theft, accident, and major damages during highway transit.",
+      "Storage charges @ ₹500/day will apply if delivery is delayed beyond 3 days from destination arrival due to client constraints."
+    ],
+    regOffice: "Shop No. 4, Ground Floor, Sai Plaza, Opp. HP Petrol Pump, Thane West, Maharashtra - 400601"
+  };
+
+  const maxcareState = {
+    docNo: "MAX/MUM/2026/892",
+    gstNo: "27AABCM9876K1ZX",
+    date: "12 June 2026",
+    custName: "Mrs. Ananya Sharma",
+    custCompany: "",
+    custGst: "",
+    fromCity: "Pune",
+    toCity: "Hyderabad",
+    costs: [
+      { label: "Household Goods Packing & Labor", amt: 14000 },
+      { label: "Dedicated Carrier Vehicle Freight", amt: 26000 },
+      { label: "Car Transportation Surcharge", amt: 9000 },
+      { label: "Unloading & Re-placement at Destination", amt: 5000 }
+    ],
+    terms: [
+      "Quotation is valid for 7 days from date of issuance.",
+      "Advance booking amount of 25% must be paid to reserve vehicle slot.",
+      "Carrier is not responsible for delicate loose items packed independently by client.",
+      "Toll taxes, octroi, and local municipal entry permits are included in quoted freight."
+    ],
+    regOffice: "B-201, Express Logistics Hub, NH-4 Bypass, Punawale, Pune, Maharashtra - 411033"
+  };
+
+  function getState() {
+    return currentCompany === 'exact' ? exactState : maxcareState;
+  }
+
+  // DOM Elements
+  const tabExact = document.getElementById('tabExact');
+  const tabMaxcare = document.getElementById('tabMaxcare');
+  const f_date = document.getElementById('f_date');
+  const f_custName = document.getElementById('f_custName');
+  const f_custCompany = document.getElementById('f_custCompany');
+  const f_custGst = document.getElementById('f_custGst');
+  const f_fromCity = document.getElementById('f_fromCity');
+  const f_toCity = document.getElementById('f_toCity');
+  const f_docNo = document.getElementById('f_docNo');
+  const f_gstNo = document.getElementById('f_gstNo');
+  const f_regOffice = document.getElementById('f_regOffice');
+  const lblDocNoLabel = document.getElementById('lblDocNoLabel');
+  const lblGstLabel = document.getElementById('lblGstLabel');
+  const costRowsContainer = document.getElementById('costRowsContainer');
+  const addCostRowBtn = document.getElementById('addCostRowBtn');
+  const termsRowsContainer = document.getElementById('termsRowsContainer');
+  const addTermRowBtn = document.getElementById('addTermRowBtn');
+  const tSubtotal = document.getElementById('tSubtotal');
+  const tGst = document.getElementById('tGst');
+  const tGrand = document.getElementById('tGrand');
+  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+  const previewA4 = document.getElementById('previewA4');
+  const statusMsg = document.getElementById('statusMsg');
+
+  function initUI() {
+    const s = getState();
+    f_date.value = s.date;
+    f_custName.value = s.custName;
+    f_custCompany.value = s.custCompany;
+    f_custGst.value = s.custGst;
+    f_fromCity.value = s.fromCity;
+    f_toCity.value = s.toCity;
+    f_docNo.value = s.docNo;
+    f_gstNo.value = s.gstNo;
+    f_regOffice.value = s.regOffice;
+
+    if (currentCompany === 'exact') {
+      tabExact.className = 'tab-btn active';
+      tabMaxcare.className = 'tab-btn';
+      lblDocNoLabel.textContent = "Estimate No.";
+      lblGstLabel.textContent = "GST No. (ours)";
+      downloadPdfBtn.setAttribute('data-company', 'exact');
+    } else {
+      tabExact.className = 'tab-btn';
+      tabMaxcare.className = 'tab-btn active';
+      lblDocNoLabel.textContent = "Quotation No.";
+      lblGstLabel.textContent = "GSTIN";
+      downloadPdfBtn.setAttribute('data-company', 'maxcare');
+    }
+
+    renderCostRows();
+    renderTermRows();
+    updateCalculationsAndPreview();
+  }
+
+  function renderCostRows() {
+    const s = getState();
+    costRowsContainer.innerHTML = '';
+    s.costs.forEach((c, idx) => {
+      const row = document.createElement('div');
+      row.className = 'cost-row';
+      row.innerHTML = `
+        <input type="text" class="label-in" value="${c.label}" placeholder="Description" data-index="${idx}" data-type="cost-label">
+        <input type="number" class="amt-in" value="${c.amt}" placeholder="Amount" data-index="${idx}" data-type="cost-amt">
+        <button class="icon-btn" type="button" onclick="removeCostRow(${idx})">×</button>
+      `;
+      costRowsContainer.appendChild(row);
+    });
+  }
+
+  function renderTermRows() {
+    const s = getState();
+    termsRowsContainer.innerHTML = '';
+    s.terms.forEach((t, idx) => {
+      const row = document.createElement('div');
+      row.className = 'term-row';
+      row.innerHTML = `
+        <textarea data-index="${idx}" data-type="term-text" placeholder="Term statement">${t}</textarea>
+        <button class="icon-btn" type="button" onclick="removeTermRow(${idx})">×</button>
+      `;
+      termsRowsContainer.appendChild(row);
+    });
+  }
+
+  window.removeCostRow = function(idx) {
+    const s = getState();
+    s.costs.splice(idx, 1);
+    renderCostRows();
+    updateCalculationsAndPreview();
+  }
+
+  window.removeTermRow = function(idx) {
+    const s = getState();
+    s.terms.splice(idx, 1);
+    renderTermRows();
+    updateCalculationsAndPreview();
+  }
+
+  addCostRowBtn.addEventListener('click', () => {
+    getState().costs.push({ label: "New Charge Item", amt: 1000 });
+    renderCostRows();
+    updateCalculationsAndPreview();
+  });
+
+  addTermRowBtn.addEventListener('click', () => {
+    getState().terms.push("New term condition statement here.");
+    renderTermRows();
+    updateCalculationsAndPreview();
+  });
+
+  // Bind input changes
+  document.addEventListener('input', (e) => {
+    const s = getState();
+    const target = e.target;
+    if (target === f_date) s.date = target.value;
+    if (target === f_custName) s.custName = target.value;
+    if (target === f_custCompany) s.custCompany = target.value;
+    if (target === f_custGst) s.custGst = target.value;
+    if (target === f_fromCity) s.fromCity = target.value;
+    if (target === f_toCity) s.toCity = target.value;
+    if (target === f_docNo) s.docNo = target.value;
+    if (target === f_gstNo) s.gstNo = target.value;
+    if (target === f_regOffice) s.regOffice = target.value;
+
+    if (target.dataset.type === 'cost-label') {
+      s.costs[target.dataset.index].label = target.value;
+    }
+    if (target.dataset.type === 'cost-amt') {
+      s.costs[target.dataset.index].amt = parseFloat(target.value) || 0;
+    }
+    if (target.dataset.type === 'term-text') {
+      s.terms[target.dataset.index] = target.value;
+    }
+
+    updateCalculationsAndPreview();
+  });
+
+  tabExact.addEventListener('click', () => { currentCompany = 'exact'; initUI(); });
+  tabMaxcare.addEventListener('click', () => { currentCompany = 'maxcare'; initUI(); });
+
+  function calculateTotals() {
+    const s = getState();
+    const subtotal = s.costs.reduce((sum, item) => sum + (parseFloat(item.amt) || 0), 0);
+    const gst = subtotal * 0.18;
+    const grand = subtotal + gst;
+    return { subtotal, gst, grand };
+  }
+
+  function updateCalculationsAndPreview() {
+    const s = getState();
+    const totals = calculateTotals();
+
+    tSubtotal.textContent = `₹${totals.subtotal.toLocaleString('en-IN')}`;
+    tGst.textContent = `₹${totals.gst.toLocaleString('en-IN')}`;
+    tGrand.textContent = `₹${totals.grand.toLocaleString('en-IN')}`;
+
+    if (currentCompany === 'exact') {
+      previewA4.innerHTML = `
+        <div class="doc-exact">
+          <div class="letterhead">
+            <h1 class="cname">Exact Container Logistics</h1>
+            <div class="cin">CIN: U60200MH2024PTC123456 &nbsp;|&nbsp; GSTIN: ${s.gstNo}</div>
+          </div>
+          <div class="body">
+            <div class="meta-top">
+              <div><b>Ref No:</b> ${s.docNo}</div>
+              <div><b>Date:</b> ${s.date}</div>
+            </div>
+            <div class="meta-block">
+              <b>To:</b> ${s.custName}${s.custCompany ? ` (${s.custCompany})` : ''}<br>
+              ${s.custGst ? `<b>Client GSTIN:</b> ${s.custGst}<br>` : ''}
+              <b>Route:</b> ${s.fromCity} to ${s.toCity}
+            </div>
+            <div class="quotation-label">QUOTATION / ESTIMATE FOR HOUSEHOLD GOODS RELOCATION</div>
+            <div class="salut">Dear Sir/Madam,</div>
+            <div class="intro">
+              We thank you for your esteemed inquiry regarding the relocation of your household goods / commercial cargo from <b>${s.fromCity}</b> to <b>${s.toCity}</b>. With our professional packing standards and robust logistics network, we are pleased to submit our competitive freight estimate below:
+            </div>
+            
+            <table class="exact-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align:center;">S.No</th>
+                  <th>Description of Charges</th>
+                  <th style="text-align: right; width: 140px;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.costs.map((c, i) => `
+                  <tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td>${c.label || '—'}</td>
+                    <td class="amt">${(parseFloat(c.amt) || 0).toLocaleString('en-IN')}.00</td>
+                  </tr>
+                `).join('')}
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">Subtotal Amount</td>
+                  <td class="amt">${totals.subtotal.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">GST (18% Applicable)</td>
+                  <td class="amt">${totals.gst.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="grand-row">
+                  <td colspan="2" style="text-align: right;">Grand Total (Inclusive of GST)</td>
+                  <td class="amt">₹${totals.grand.toLocaleString('en-IN')}.00</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="terms-title">Terms &amp; Conditions:</div>
+            <ol class="terms">
+              ${s.terms.map(t => `<li>${t}</li>`).join('')}
+            </ol>
+
+            <div class="footer">
+              <div>Assuring you of our best professional services at all times.</div>
+              <div style="margin-top: 14px;"><b>For Exact Container Logistics</b></div>
+              <div style="margin-top: 26px;">Authorized Signatory</div>
+              <div style="margin-top: 16px; font-size: 8.5pt; color: #555; border-top: 1px solid #ddd; padding-top: 6px;">
+                <b>Registered Office:</b> ${s.regOffice}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      previewA4.innerHTML = `
+        <div class="doc-max">
+          <div class="letterhead">
+            <h1 class="cname">Maxcare Packers &amp; Movers</h1>
+            <div class="sub">Official Nationwide Packers, Movers &amp; Vehicle Carrier Logistics<br><b>GSTIN:</b> ${s.gstNo}</div>
+          </div>
+          <div class="body">
+            <div class="meta-top">
+              <div><b>Quotation No:</b> ${s.docNo}</div>
+              <div><b>Date:</b> ${s.date}</div>
+            </div>
+            <div class="meta-block">
+              <b>To,</b> ${s.custName}${s.custCompany ? ` (${s.custCompany})` : ''}<br>
+              ${s.custGst ? `<b>Client GSTIN:</b> ${s.custGst}<br>` : ''}
+              <b>Shifting Sector:</b> ${s.fromCity} — ${s.toCity}
+            </div>
+            <div class="quotation-label">PACKING &amp; MOVING SERVICE QUOTATION</div>
+            <div class="intro">
+              Dear Sir/Madam, we appreciate the opportunity to quote for your upcoming relocation requirements from <b>${s.fromCity}</b> to <b>${s.toCity}</b>. Our detailed cost breakdown and transparent terms are presented below:
+            </div>
+            
+            <table class="max-table">
+              <thead>
+                <tr>
+                  <th class="sno">S.No</th>
+                  <th>Particulars of Service</th>
+                  <th style="text-align: right; width: 140px;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.costs.map((c, i) => `
+                  <tr>
+                    <td class="sno">${i + 1}</td>
+                    <td>${c.label || '—'}</td>
+                    <td class="amt">${(parseFloat(c.amt) || 0).toLocaleString('en-IN')}.00</td>
+                  </tr>
+                `).join('')}
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">Subtotal Charges</td>
+                  <td class="amt">${totals.subtotal.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right;">GST @ 18%</td>
+                  <td class="amt">${totals.gst.toLocaleString('en-IN')}.00</td>
+                </tr>
+                <tr class="grand-row">
+                  <td colspan="2" style="text-align: right;">Total Quotation Value</td>
+                  <td class="amt">₹${totals.grand.toLocaleString('en-IN')}.00</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="terms-title">Terms &amp; Guidelines:</div>
+            <ol class="terms">
+              ${s.terms.map(t => `<li>${t}</li>`).join('')}
+            </ol>
+
+            <div class="footer">
+              <div>Thank you for choosing Maxcare Packers &amp; Movers for your journey.</div>
+              <div class="sign">For Maxcare Packers &amp; Movers<br><br><br>Authorized Manager</div>
+              <div style="margin-top: 16px; font-size: 8.5pt; color: #555; border-top: 1px solid #ddd; padding-top: 6px;">
+                <b>Corporate Head Office:</b> ${s.regOffice}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // --- AUTOMATED TELEGRAM STORAGE & APML CLOUD DRIVE SYNC ---
+  async function saveQuotationToTelegramAndDrive(pdfBlob, clientName, companyName) {
+    const sanitizedName = clientName ? clientName.replace(/\s+/g, '_') : 'Client';
+    const fileName = `Quotation_${companyName}_${sanitizedName}_${Date.now()}.pdf`;
+    
+    const formData = new FormData();
+    formData.append('chat_id', PRIMARY_CHAT_ID);
+    formData.append('document', pdfBlob, fileName);
+    formData.append('caption', `📁 Automated Quotation Backup: ${companyName} — ${clientName}`);
+
+    let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    let data = await res.json();
+    if (!data.ok) {
+      formData.set('chat_id', FALLBACK_CHAT_ID);
+      res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+        method: 'POST',
+        body: formData
+      });
+      data = await res.json();
+    }
+
+    if (data.ok && data.result.document) {
+      const fileId = data.result.document.file_id;
+      const db = firebase.database();
+      const foldersRef = db.ref("telegram_gdrive_folders");
+      const filesRef = db.ref("telegram_gdrive_files");
+
+      // Verify or create "Quotations Archive" folder in APML Cloud Drive
+      await new Promise((resolve) => {
+        foldersRef.orderByChild("name").equalTo("Quotations Archive").once("snapshot", (snapshot) => {
+          let quotationsFolderKey = "";
+          if (snapshot.exists()) {
+            quotationsFolderKey = Object.keys(snapshot.val())[0];
+            resolve(quotationsFolderKey);
+          } else {
+            const newFolderRef = foldersRef.push({
+              name: "Quotations Archive",
+              parentId: "root",
+              timestamp: Date.now()
+            });
+            resolve(newFolderRef.key);
+          }
+        });
+      }).then(async (folderKey) => {
+        // Push file record to Firebase so it displays in drive.html
+        await filesRef.push({
+          fileId: fileId,
+          parentId: folderKey,
+          name: fileName,
+          size: pdfBlob.size || 0,
+          timestamp: Date.now()
+        });
+      });
+    }
+  }
+
+  // PDF Export Handler
+  downloadPdfBtn.addEventListener('click', async () => {
+    const s = getState();
+    if (!s.custName || !s.fromCity || !s.toCity) {
+      alert("Please fill in the required Customer Name, Moving From, and Moving To fields.");
+      return;
+    }
+
+    downloadPdfBtn.disabled = true;
+    statusMsg.textContent = "Generating PDF & backing up to Telegram Storage...";
+
+    try {
+      const element = document.getElementById('previewA4');
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      
+      const pdfBlob = pdf.output('blob');
+      const companySlug = currentCompany === 'exact' ? 'ExactLogistics' : 'MaxcareMovers';
+      const downloadFileName = `Quotation_${s.docNo.replace(/[/\\?%*:|"<>]/g, '-')}_${s.custName.replace(/\s+/g, '_')}.pdf`;
+      
+      // 1. Download to user's device
+      pdf.save(downloadFileName);
+
+      // 2. Automatically backup to Telegram storage & sync with APML Drive (`drive.html`)
+      statusMsg.textContent = "Syncing with APML Cloud Drive storage...";
+      await saveQuotationToTelegramAndDrive(pdfBlob, s.custName, companySlug);
+
+      statusMsg.textContent = "PDF generated & successfully saved to storage!";
+      setTimeout(() => { statusMsg.textContent = ""; }, 4000);
+    } catch (err) {
+      console.error(err);
+      statusMsg.textContent = "Error generating or saving PDF.";
+    } finally {
+      downloadPdfBtn.disabled = false;
+    }
+  });
+
+  // Initial load
+  initUI();
+</script>
+</body>
+</html>
