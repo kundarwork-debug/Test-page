@@ -212,6 +212,29 @@
     box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
   }
 
+  /* QUICK PRICING CONTAINER */
+  .quick-pricing-card {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.9) 0%, #ffffff 100%);
+    border: 1.5px solid rgba(185, 28, 28, 0.25);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(185, 28, 28, 0.05);
+    position: relative;
+  }
+
+  .quick-pricing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+
   .field-group h2 {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 12.5px;
@@ -349,6 +372,25 @@
     border-top: 1px dashed var(--surface-border);
     margin-top: 6px;
     padding-top: 8px;
+  }
+
+  .reset-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    background: #ffffff;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: var(--transition-m3);
+  }
+
+  .reset-btn:hover {
+    color: var(--text-main);
+    background: var(--surface-subtle);
   }
 
   /* Download Toolbar */
@@ -618,7 +660,6 @@
   const PRIMARY_CHAT_ID = "-1004302268775";
   const FALLBACK_CHAT_ID = "-4302268775";
 
-  // State
   let currentCompany = 'exact';
   
   const exactState = {
@@ -673,7 +714,6 @@
     return currentCompany === 'exact' ? exactState : maxcareState;
   }
 
-  // DOM Elements
   const tabExact = document.getElementById('tabExact');
   const tabMaxcare = document.getElementById('tabMaxcare');
   const f_date = document.getElementById('f_date');
@@ -784,7 +824,6 @@
     updateCalculationsAndPreview();
   });
 
-  // Bind input changes
   document.addEventListener('input', (e) => {
     const s = getState();
     const target = e.target;
@@ -971,7 +1010,6 @@
     }
   }
 
-  // --- AUTOMATED TELEGRAM STORAGE & APML CLOUD DRIVE SYNC ---
   async function saveQuotationToTelegramAndDrive(pdfBlob, clientName, companyName) {
     const sanitizedName = clientName ? clientName.replace(/\s+/g, '_') : 'Client';
     const fileName = `Quotation_${companyName}_${sanitizedName}_${Date.now()}.pdf`;
@@ -1002,7 +1040,6 @@
       const foldersRef = db.ref("telegram_gdrive_folders");
       const filesRef = db.ref("telegram_gdrive_files");
 
-      // Verify or create "Quotations Archive" folder in APML Cloud Drive
       await new Promise((resolve) => {
         foldersRef.orderByChild("name").equalTo("Quotations Archive").once("snapshot", (snapshot) => {
           let quotationsFolderKey = "";
@@ -1019,7 +1056,6 @@
           }
         });
       }).then(async (folderKey) => {
-        // Push file record to Firebase so it displays in drive.html
         await filesRef.push({
           fileId: fileId,
           parentId: folderKey,
@@ -1031,7 +1067,6 @@
     }
   }
 
-  // PDF Export Handler
   downloadPdfBtn.addEventListener('click', async () => {
     const s = getState();
     if (!s.custName || !s.fromCity || !s.toCity) {
@@ -1063,10 +1098,8 @@
       const companySlug = currentCompany === 'exact' ? 'ExactLogistics' : 'MaxcareMovers';
       const downloadFileName = `Quotation_${s.docNo.replace(/[/\\?%*:|"<>]/g, '-')}_${s.custName.replace(/\s+/g, '_')}.pdf`;
       
-      // 1. Download to user's device
       pdf.save(downloadFileName);
 
-      // 2. Automatically backup to Telegram storage & sync with APML Drive (`drive.html`)
       statusMsg.textContent = "Syncing with APML Cloud Drive storage...";
       await saveQuotationToTelegramAndDrive(pdfBlob, s.custName, companySlug);
 
@@ -1080,7 +1113,6 @@
     }
   });
 
-  // Initial load
   initUI();
 </script>
 </body>
