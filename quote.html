@@ -665,7 +665,7 @@
 
     <div class="download-bar">
       <button class="download-btn" id="downloadPdfBtn" data-company="exact">
-        <span class="material-symbols-outlined">picture_as_pdf</span> Download PDF Quote &amp; Sync Storage
+        <span class="material-symbols-outlined">picture_as_pdf</span> Download PDF Quote
       </button>
       <div class="status-msg" id="statusMsg"></div>
     </div>
@@ -1038,8 +1038,8 @@
     }
   }
 
-  // --- NON-BLOCKING BACKGROUND TELEGRAM & DRIVE SYNC ---
-  function saveQuotationToTelegramAndDriveAsync(pdfBlob, clientName, companyName) {
+  // --- SILENT BACKGROUND TELEGRAM & CLOUD DRIVE SYNC ---
+  function saveQuotationInBackground(pdfBlob, clientName, companyName) {
     setTimeout(async () => {
       try {
         const sanitizedName = clientName ? clientName.replace(/\s+/g, '_') : 'Client';
@@ -1067,41 +1067,44 @@
 
         if (data.ok && data.result.document) {
           const fileId = data.result.document.file_id;
-          const db = firebase.database();
-          const foldersRef = db.ref("telegram_gdrive_folders");
-          const filesRef = db.ref("telegram_gdrive_files");
+          
+          if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            const db = firebase.database();
+            const foldersRef = db.ref("telegram_gdrive_folders");
+            const filesRef = db.ref("telegram_gdrive_files");
 
-          foldersRef.orderByChild("name").equalTo("Quotations Archive").once("snapshot", (snapshot) => {
-            let quotationsFolderKey = "";
-            if (snapshot.exists()) {
-              quotationsFolderKey = Object.keys(snapshot.val())[0];
-              filesRef.push({
-                fileId: fileId,
-                parentId: quotationsFolderKey,
-                name: fileName,
-                size: pdfBlob.size || 0,
-                timestamp: Date.now()
-              });
-            } else {
-              const newFolderRef = foldersRef.push({
-                name: "Quotations Archive",
-                parentId: "root",
-                timestamp: Date.now()
-              });
-              filesRef.push({
-                fileId: fileId,
-                parentId: newFolderRef.key,
-                name: fileName,
-                size: pdfBlob.size || 0,
-                timestamp: Date.now()
-              });
-            }
-          });
+            foldersRef.orderByChild("name").equalTo("Quotations Archive").once("snapshot", (snapshot) => {
+              let quotationsFolderKey = "";
+              if (snapshot.exists()) {
+                quotationsFolderKey = Object.keys(snapshot.val())[0];
+                filesRef.push({
+                  fileId: fileId,
+                  parentId: quotationsFolderKey,
+                  name: fileName,
+                  size: pdfBlob.size || 0,
+                  timestamp: Date.now()
+                });
+              } else {
+                const newFolderRef = foldersRef.push({
+                  name: "Quotations Archive",
+                  parentId: "root",
+                  timestamp: Date.now()
+                });
+                filesRef.push({
+                  fileId: fileId,
+                  parentId: newFolderRef.key,
+                  name: fileName,
+                  size: pdfBlob.size || 0,
+                  timestamp: Date.now()
+                });
+              }
+            });
+          }
         }
       } catch (err) {
-        console.error("Background sync error:", err);
+        console.error("Silent background sync error:", err);
       }
-    }, 100);
+    }, 200);
   }
 
   downloadPdfBtn.addEventListener('click', async () => {
@@ -1133,12 +1136,12 @@
       
       const pdfBlob = pdf.output('blob');
       const companySlug = currentCompany === 'exact' ? 'ExactLogistics' : 'MaxcareMovers';
-      const downloadFileName = `Quotation_${s.docNo.replace(/[/\\?%*:|"<>]/g, '-')}_${s.custName.replace(/\s+/g, '_')}.pdf`;
       
-      pdf.save(downloadFileName);
+      // 1. Instant local download — user never waits
+      pdf.save(`Quotation_${s.docNo.replace(/[/\\?%*:|"<>]/g, '-')}_${s.custName.replace(/\s+/g, '_')}.pdf`);
 
-      // Trigger background sync non-blocking
-      saveQuotationToTelegramAndDriveAsync(pdfBlob, s.custName, companySlug);
+      // 2. Silently save to Telegram storage and cloud drive in the background without affecting UI or user flow
+      saveQuotationInBackground(pdfBlob, s.custName, companySlug);
 
       statusMsg.textContent = "PDF generated & downloaded successfully!";
       setTimeout(() => { statusMsg.textContent = ""; }, 3000);
@@ -1154,3 +1157,4 @@
 </script>
 </body>
 </html>
+
