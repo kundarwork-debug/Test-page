@@ -508,6 +508,7 @@
   .doc-exact .footer { margin-top: 12px; font-size: 10pt; line-height: 1.5; }
   .doc-exact .footer b { font-weight: 700; }
 
+  /* MAXCARE PACKERS LETTERHEAD STYLING (COMPANY NAME TOP, ADDRESS DOWN) */
   .doc-max {
     font-family: Arial, Helvetica, sans-serif;
     color: #141414;
@@ -564,12 +565,39 @@
   .doc-max .footer { margin-top: 18px; font-size: 10pt; line-height: 1.6; }
   .doc-max .footer .sign { margin-top: 14px; font-weight: 700; }
 
+  /* ---------- RESPONSIVE MEDIA QUERIES (MOBILE) ---------- */
   @media (max-width: 768px) {
-    .app { grid-template-columns: 1fr !important; width: 100% !important; min-height: auto; padding-top: 64px !important; }
-    .panel { width: 100% !important; max-height: none !important; border-right: none !important; border-bottom: 1px solid var(--surface-border); padding: 20px 16px 40px !important; box-sizing: border-box; }
-    .totals-box { width: 100% !important; padding: 12px 14px !important; font-size: 12px !important; }
-    #docDetailsGroup, #termsGroup, #regOfficeGroup { display: none !important; }
-    .stage { display: none !important; }
+    .app {
+      grid-template-columns: 1fr !important;
+      width: 100% !important;
+      min-height: auto;
+      padding-top: 64px !important;
+    }
+
+    .panel {
+      width: 100% !important;
+      max-height: none !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--surface-border);
+      padding: 20px 16px 40px !important;
+      box-sizing: border-box;
+    }
+
+    .totals-box {
+      width: 100% !important;
+      padding: 12px 14px !important;
+      font-size: 12px !important;
+    }
+
+    #docDetailsGroup,
+    #termsGroup,
+    #regOfficeGroup {
+      display: none !important;
+    }
+
+    .stage {
+      display: none !important;
+    }
   }
 </style>
 </head>
@@ -591,7 +619,7 @@
       <button class="tab-btn" data-company="maxcare" id="tabMaxcare">Maxcare Packers<br>&amp; Movers</button>
     </div>
 
-    <!-- CUSTOMER & DETAILS -->
+    <!-- HIGHLIGHTED CUSTOMER & DETAILS CARD -->
     <div class="field-group" id="sharedFieldGroup">
       <h2><span class="material-symbols-outlined" style="font-size: 18px;">person</span> Customer &amp; details <span style="text-transform:none; font-weight:600; opacity:0.85;">— shared</span></h2>
       <div class="field"><label>Date</label><input id="f_date"></div>
@@ -1109,7 +1137,7 @@
       
       pdf.save(downloadFileName);
 
-      // Trigger background upload without blocking the interface or causing syncing locks
+      // Trigger background sync non-blocking
       saveQuotationToTelegramAndDriveAsync(pdfBlob, s.custName, companySlug);
 
       statusMsg.textContent = "PDF generated & downloaded successfully!";
@@ -1126,4 +1154,3 @@
 </script>
 </body>
 </html>
-
